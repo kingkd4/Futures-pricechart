@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Futures P&L Calculator</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 
@@ -23,9 +23,14 @@
     --surface2: #D6EBE8;
     --teal: #4A9E96;
     --teal-light: #74BDB7;
-    --teal-muted: #C2DFDD;
+    --teal-muted: #C2DFDd;
+    --sage: #6BAA8E;
+    --sage-light: #96C4AD;
+    --sage-muted: #D4EBE1;
+    --mint: #B2D9D0;
     --sky: #7BBCD4;
     --sky-muted: #D0EAF5;
+    --seafoam: #A8D5C8;
     --ink: #1C3A36;
     --ink-soft: #2E5C55;
     --ink-mid: #3D6B62;
@@ -34,36 +39,7 @@
     --white: #F4FAFA;
   }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-/* Hard reset — kills iOS blue tint on buttons */
-button {
--webkit-appearance: none;
--moz-appearance: none;
-appearance: none;
-border: none;
-background: none;
-color: inherit;
-font: inherit;
-cursor: pointer;
-outline: none;
--webkit-tap-highlight-color: transparent;
-touch-action: manipulation;
-}
-
-/* Hard reset for inputs */
-input {
--webkit-appearance: none;
--moz-appearance: none;
-appearance: none;
-border: none;
-background: none;
-font: inherit;
-color: inherit;
-outline: none;
--webkit-tap-highlight-color: transparent;
-touch-action: manipulation;
-}
+- { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
 background: var(–bg);
@@ -71,8 +47,6 @@ font-family: ‘DM Sans’, sans-serif;
 color: var(–ink);
 min-height: 100vh;
 padding: 0 0 60px;
-touch-action: manipulation;
--webkit-text-size-adjust: 100%;
 }
 
 /* HEADER */
@@ -107,7 +81,6 @@ letter-spacing: 0.05em;
 color: var(–ink);
 text-shadow: 0 1px 6px rgba(255,255,255,0.4);
 position: relative;
-z-index: 1;
 }
 header p {
 font-size: 0.7rem;
@@ -117,7 +90,6 @@ color: var(–ink-soft);
 margin-top: 5px;
 font-weight: 400;
 position: relative;
-z-index: 1;
 }
 
 /* SYMBOL TABS */
@@ -129,17 +101,17 @@ border-bottom: 1px solid var(–border);
 .tab-btn {
 flex: 1;
 padding: 14px 10px 12px;
-/* explicit color — never inherit browser blue */
-color: var(–ink-faint);
+border: none;
+background: transparent;
+cursor: pointer;
 font-family: ‘Cormorant Garamond’, serif;
 font-size: 1.15rem;
 font-weight: 400;
-background: transparent;
+color: var(–ink-faint);
 border-bottom: 2px solid transparent;
-transition: color 0.22s, border-color 0.22s, background 0.22s;
+transition: all 0.22s;
 position: relative;
 top: 1px;
-text-align: center;
 }
 .tab-btn.active {
 color: var(–ink);
@@ -161,7 +133,7 @@ font-weight: 300;
 /* MAIN */
 main { padding: 20px 18px; }
 
-/* SYMBOL CARD */
+/* SYMBOL INFO CARD */
 .symbol-card {
 background: linear-gradient(135deg, #A8E6CE 0%, #7ED8D0 60%, #8ECCE8 100%);
 border-radius: 16px;
@@ -182,14 +154,14 @@ width: 80px; height: 80px;
 border-radius: 50%;
 background: rgba(255,255,255,0.12);
 }
-.sym-name {
+.symbol-card .sym-name {
 font-family: ‘Cormorant Garamond’, serif;
 font-size: 2.1rem;
 font-weight: 400;
 color: var(–ink);
 letter-spacing: 0.03em;
 }
-.sym-desc {
+.symbol-card .sym-desc {
 font-size: 0.68rem;
 color: var(–ink-soft);
 text-transform: uppercase;
@@ -197,21 +169,20 @@ letter-spacing: 0.13em;
 margin-top: 3px;
 font-weight: 400;
 }
-.tick-badge { text-align: right; position: relative; z-index: 1; }
-.tick-label {
+.symbol-card .tick-badge { text-align: right; position: relative; }
+.symbol-card .tick-label {
 font-size: 0.62rem;
 text-transform: uppercase;
 letter-spacing: 0.12em;
 color: var(–ink-mid);
 }
-.tick-num {
+.symbol-card .tick-num {
 font-family: ‘Cormorant Garamond’, serif;
 font-size: 1.65rem;
 font-weight: 400;
 color: var(–ink);
 letter-spacing: 0.02em;
 }
-.tick-num span { font-size: 1rem; }
 
 /* INPUTS */
 .input-group { margin-bottom: 18px; }
@@ -225,28 +196,27 @@ display: block;
 font-weight: 500;
 }
 
+/* SLIDER ROW with +/- buttons */
 .slider-row {
 display: flex;
 align-items: center;
 gap: 8px;
 }
-
-/* +/- buttons — fully explicit, no inheritance */
 .pm-btn {
-width: 36px;
-height: 36px;
-min-width: 36px;
+width: 30px;
+height: 30px;
 border-radius: 50%;
 border: 1.5px solid var(–border);
 background: var(–white);
 color: var(–ink-soft);
-font-size: 1.2rem;
+font-size: 1.1rem;
 line-height: 1;
+cursor: pointer;
 display: flex;
 align-items: center;
 justify-content: center;
 flex-shrink: 0;
-transition: background 0.15s, transform 0.1s;
+transition: background 0.15s, border-color 0.15s, transform 0.1s;
 user-select: none;
 }
 .pm-btn:active {
@@ -254,56 +224,47 @@ transform: scale(0.9);
 background: var(–teal-muted);
 border-color: var(–teal-light);
 }
-
-/* Range sliders — Safari/iOS complete fix */
-input[type=range] {
+.slider-row input[type=range] {
 flex: 1;
 -webkit-appearance: none;
 appearance: none;
 height: 4px;
-border-radius: 4px;
 background: linear-gradient(90deg, var(–teal-muted), var(–sky-muted));
+border-radius: 4px;
+outline: none;
 cursor: pointer;
-padding: 0;
-margin: 0;
-/* must set explicit height so thumb is not clipped */
-min-height: 26px;
-/* center the track vertically */
-background-clip: content-box;
-padding-block: 11px;
-background-origin: content-box;
 }
-input[type=range]::-webkit-slider-runnable-track {
+.slider-row input[type=range]::-webkit-slider-runnable-track {
 height: 4px;
 border-radius: 4px;
 background: linear-gradient(90deg, var(–teal-muted), var(–sky-muted));
 }
-input[type=range]::-webkit-slider-thumb {
+.slider-row input[type=range]::-webkit-slider-thumb {
 -webkit-appearance: none;
 appearance: none;
-width: 26px;
-height: 26px;
+width: 22px;
+height: 22px;
+margin-top: -9px;
 border-radius: 50%;
 background: linear-gradient(135deg, var(–teal-light), var(–sky));
-box-shadow: 0 2px 8px rgba(74,158,150,0.45);
-border: 2.5px solid #fff;
-margin-top: -11px;
+cursor: pointer;
+box-shadow: 0 2px 8px rgba(74,158,150,0.4);
+border: 2px solid #fff;
 }
-input[type=range]::-moz-range-track {
+.slider-row input[type=range]::-moz-range-track {
 height: 4px;
 border-radius: 4px;
 background: linear-gradient(90deg, var(–teal-muted), var(–sky-muted));
-border: none;
 }
-input[type=range]::-moz-range-thumb {
-width: 26px;
-height: 26px;
+.slider-row input[type=range]::-moz-range-thumb {
+width: 22px;
+height: 22px;
 border-radius: 50%;
 background: linear-gradient(135deg, var(–teal-light), var(–sky));
-box-shadow: 0 2px 8px rgba(74,158,150,0.45);
-border: 2.5px solid #fff;
+cursor: pointer;
+box-shadow: 0 2px 8px rgba(74,158,150,0.4);
+border: 2px solid #fff;
 }
-
 .number-input {
 width: 72px;
 border: 1.5px solid var(–border);
@@ -314,6 +275,7 @@ font-family: ‘Cormorant Garamond’, serif;
 font-size: 1.15rem;
 color: var(–ink);
 text-align: center;
+outline: none;
 transition: border-color 0.2s, box-shadow 0.2s;
 }
 .number-input:focus {
@@ -333,22 +295,24 @@ background: var(–white);
 border: 1.5px solid var(–border);
 border-radius: 12px;
 padding: 14px 16px;
+transition: transform 0.15s;
 }
+.result-card:active { transform: scale(0.97); }
 .result-card.highlight {
 background: linear-gradient(135deg, #A8E6DF 0%, #8DD4E0 60%, #8EC8E8 100%);
 border-color: transparent;
 grid-column: 1 / -1;
 box-shadow: 0 4px 18px rgba(74,158,150,0.35);
 }
-.rc-label {
+.result-card .rc-label {
 font-size: 0.62rem;
 text-transform: uppercase;
 letter-spacing: 0.13em;
 color: var(–ink-mid);
 font-weight: 500;
 }
-.highlight .rc-label { color: var(–ink-soft); }
-.rc-value {
+.result-card.highlight .rc-label { color: var(–ink-soft); }
+.result-card .rc-value {
 font-family: ‘Cormorant Garamond’, serif;
 font-size: 1.9rem;
 font-weight: 300;
@@ -356,13 +320,16 @@ color: var(–ink);
 margin-top: 3px;
 letter-spacing: 0.01em;
 }
-.highlight .rc-value { font-size: 2.5rem; }
-.rc-sub {
+.result-card.highlight .rc-value {
+font-size: 2.5rem;
+color: var(–ink);
+}
+.result-card .rc-sub {
 font-size: 0.63rem;
 color: var(–ink-mid);
 margin-top: 3px;
 }
-.highlight .rc-sub { color: var(–ink-soft); }
+.result-card.highlight .rc-sub { color: var(–ink-soft); }
 
 /* DIVIDER */
 .divider {
@@ -371,7 +338,8 @@ background: linear-gradient(90deg, transparent, var(–border), transparent);
 margin: 24px 0;
 }
 
-/* QUICK REFERENCE */
+/* QUICK REFERENCE TABLE */
+.ref-section { margin-top: 4px; }
 .ref-title {
 font-family: ‘Cormorant Garamond’, serif;
 font-size: 1.05rem;
@@ -407,9 +375,18 @@ border: 1px solid var(–border);
 color: var(–ink);
 }
 .ref-table tr:nth-child(even) td { background: var(–surface); }
-.ref-table tr:nth-child(odd)  td { background: var(–white); }
-.pts-col    { color: var(–ink-soft); font-size: 0.82rem; font-weight: 500; }
-.dollar-col { font-family: ‘Cormorant Garamond’, serif; font-size: 1rem; font-weight: 500; color: var(–ink-soft); }
+.ref-table tr:nth-child(odd) td { background: var(–white); }
+.ref-table .pts-col {
+color: var(–ink-soft);
+font-size: 0.82rem;
+font-weight: 500;
+}
+.ref-table .dollar-col {
+font-family: ‘Cormorant Garamond’, serif;
+font-size: 1rem;
+font-weight: 500;
+color: var(–ink-soft);
+}
 </style>
 
 </head>
@@ -421,9 +398,15 @@ color: var(–ink);
 </header>
 
 <div class="symbol-tabs">
-  <button class="tab-btn active" onclick="setSymbol('MNQ')">MNQ <span class="tick-val">$2 / pt</span></button>
-  <button class="tab-btn"        onclick="setSymbol('MES')">MES <span class="tick-val">$5 / pt</span></button>
-  <button class="tab-btn"        onclick="setSymbol('MGC')">MGC <span class="tick-val">$10 / pt</span></button>
+  <button class="tab-btn active" onclick="setSymbol('MNQ')">
+    MNQ <span class="tick-val">$2 / pt</span>
+  </button>
+  <button class="tab-btn" onclick="setSymbol('MES')">
+    MES <span class="tick-val">$5 / pt</span>
+  </button>
+  <button class="tab-btn" onclick="setSymbol('MGC')">
+    MGC <span class="tick-val">$10 / pt</span>
+  </button>
 </div>
 
 <main>
@@ -431,39 +414,39 @@ color: var(–ink);
   <div class="symbol-card">
     <div>
       <div class="sym-name" id="card-symbol">MNQ</div>
-      <div class="sym-desc"  id="card-desc">Micro Nasdaq-100</div>
+      <div class="sym-desc" id="card-desc">Micro Nasdaq-100</div>
     </div>
     <div class="tick-badge">
       <div class="tick-label">Tick Value</div>
-      <div class="tick-num" id="card-tick">$2<span>/pt</span></div>
+      <div class="tick-num" id="card-tick">$2<span style="font-size:1rem">/pt</span></div>
     </div>
   </div>
 
   <div class="input-group">
     <label class="input-label">Contracts</label>
     <div class="slider-row">
-      <button class="pm-btn" onclick="step('contracts',-1)">−</button>
-      <input type="range" id="contracts-slider" min="1" max="20" value="1" oninput="syncInput('contracts',this.value)">
-      <button class="pm-btn" onclick="step('contracts',1)">+</button>
-      <input type="number" class="number-input" id="contracts-input" min="1" max="99" value="1" oninput="syncSlider('contracts',this.value)">
+      <button class="pm-btn" onclick="step('contracts', -1)">−</button>
+      <input type="range" id="contracts-slider" min="1" max="20" value="1" oninput="syncInput('contracts', this.value)">
+      <button class="pm-btn" onclick="step('contracts', 1)">+</button>
+      <input type="number" class="number-input" id="contracts-input" min="1" max="99" value="1" oninput="syncSlider('contracts', this.value)">
     </div>
   </div>
 
   <div class="input-group">
     <label class="input-label">Points</label>
     <div class="slider-row">
-      <button class="pm-btn" onclick="step('points',-0.25)">−</button>
-      <input type="range" id="points-slider" min="1" max="200" value="15" oninput="syncInput('points',this.value)">
-      <button class="pm-btn" onclick="step('points',0.25)">+</button>
-      <input type="number" class="number-input" id="points-input" min="0.25" max="9999" step="0.25" value="15" oninput="syncSlider('points',this.value)">
+      <button class="pm-btn" onclick="step('points', -0.25)">−</button>
+      <input type="range" id="points-slider" min="1" max="200" value="15" oninput="syncInput('points', this.value)">
+      <button class="pm-btn" onclick="step('points', 0.25)">+</button>
+      <input type="number" class="number-input" id="points-input" min="0.25" max="9999" step="0.25" value="15" oninput="syncSlider('points', this.value)">
     </div>
   </div>
 
   <div class="results-grid">
     <div class="result-card highlight">
-      <div class="rc-label">Total P&amp;L</div>
+      <div class="rc-label">Total P&L</div>
       <div class="rc-value" id="result-dollar">$30.00</div>
-      <div class="rc-sub"   id="result-sub">1 contract · 15 pts · MNQ</div>
+      <div class="rc-sub" id="result-sub">1 contract · 15 pts · MNQ</div>
     </div>
     <div class="result-card">
       <div class="rc-label">Per Contract</div>
@@ -473,17 +456,22 @@ color: var(–ink);
     <div class="result-card">
       <div class="rc-label">Per Point</div>
       <div class="rc-value" id="result-per-point">$2.00</div>
-      <div class="rc-sub"   id="result-tick-sub">tick × contracts</div>
+      <div class="rc-sub" id="result-tick-sub">tick × contracts</div>
     </div>
   </div>
 
   <div class="divider"></div>
 
-  <div>
+  <div class="ref-section">
     <div class="ref-title">Quick Reference — <span id="ref-sym-label">MNQ</span></div>
     <table class="ref-table">
       <thead>
-        <tr><th>Points</th><th>1 Contract</th><th>2 Contracts</th><th>5 Contracts</th></tr>
+        <tr>
+          <th>Points</th>
+          <th>1 Contract</th>
+          <th>2 Contracts</th>
+          <th>5 Contracts</th>
+        </tr>
       </thead>
       <tbody id="ref-tbody"></tbody>
     </table>
@@ -493,98 +481,87 @@ color: var(–ink);
 
 <script>
   const SYMBOLS = {
-    MNQ: { name:'MNQ', desc:'Micro Nasdaq-100',      tickValue:2  },
-    MES: { name:'MES', desc:'Micro E-mini S&P 500',  tickValue:5  },
-    MGC: { name:'MGC', desc:'Micro Gold',             tickValue:10 },
+    MNQ: { name: 'MNQ', desc: 'Micro Nasdaq-100',     tickValue: 2  },
+    MES: { name: 'MES', desc: 'Micro E-mini S&P 500', tickValue: 5  },
+    MGC: { name: 'MGC', desc: 'Micro Gold',            tickValue: 10 },
   };
-  const REF_POINTS  = [5,10,15,20,25,30,50,100];
-  const STORAGE_KEY = 'futures-pnl-state';
 
-  function loadState() {
-    try { const s = localStorage.getItem(STORAGE_KEY); if (s) return JSON.parse(s); } catch(e){}
-    return { symbol:'MNQ', contracts:1, points:15 };
-  }
-  function saveState() {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify({symbol:currentSymbol, contracts, points})); } catch(e){}
-  }
-
-  const st = loadState();
-  let currentSymbol = st.symbol;
-  let contracts     = st.contracts;
-  let points        = st.points;
+  const REF_POINTS = [5, 10, 15, 20, 25, 30, 50, 100];
+  let currentSymbol = 'MNQ';
+  let contracts = 1;
+  let points = 15;
 
   function setSymbol(sym) {
     currentSymbol = sym;
-    document.querySelectorAll('.tab-btn').forEach((b,i) =>
-      b.classList.toggle('active', ['MNQ','MES','MGC'][i] === sym));
+    document.querySelectorAll('.tab-btn').forEach((b, i) => {
+      b.classList.toggle('active', ['MNQ','MES','MGC'][i] === sym);
+    });
     const s = SYMBOLS[sym];
     document.getElementById('card-symbol').textContent = s.name;
-    document.getElementById('card-desc').textContent   = s.desc;
-    document.getElementById('card-tick').innerHTML     = `$${s.tickValue}<span>/pt</span>`;
-    saveState(); recalc(); buildRefTable();
+    document.getElementById('card-desc').textContent = s.desc;
+    document.getElementById('card-tick').innerHTML = `$${s.tickValue}<span style="font-size:1rem">/pt</span>`;
+    recalc();
+    buildRefTable();
   }
 
   function syncInput(field, val) {
     document.getElementById(`${field}-input`).value = val;
-    if (field==='contracts') contracts = parseInt(val)||1;
-    else points = parseFloat(val)||0;
-    saveState(); recalc();
+    if (field === 'contracts') contracts = parseInt(val) || 1;
+    if (field === 'points') points = parseFloat(val) || 0;
+    recalc();
   }
+
   function syncSlider(field, val) {
-    const max = field==='contracts' ? 20 : 200;
-    document.getElementById(`${field}-slider`).value = Math.min(parseFloat(val)||0, max);
-    if (field==='contracts') contracts = parseInt(val)||1;
-    else points = parseFloat(val)||0;
-    saveState(); recalc();
+    const max = field === 'contracts' ? 20 : 200;
+    document.getElementById(`${field}-slider`).value = Math.min(parseFloat(val) || 0, max);
+    if (field === 'contracts') contracts = parseInt(val) || 1;
+    if (field === 'points') points = parseFloat(val) || 0;
+    recalc();
   }
+
   function step(field, delta) {
-    if (field==='contracts') {
-      contracts = Math.max(1, Math.min(99, (contracts||1) + delta));
-      document.getElementById('contracts-input').value  = contracts;
+    if (field === 'contracts') {
+      contracts = Math.max(1, Math.min(99, (contracts || 1) + delta));
+      document.getElementById('contracts-input').value = contracts;
       document.getElementById('contracts-slider').value = Math.min(contracts, 20);
     } else {
-      points = Math.max(0.25, Math.round(((points||0)+delta)*4)/4);
-      document.getElementById('points-input').value  = points;
+      points = Math.max(0.25, Math.round(((points || 0) + delta) * 4) / 4);
+      document.getElementById('points-input').value = points;
       document.getElementById('points-slider').value = Math.min(points, 200);
     }
-    saveState(); recalc();
+    recalc();
   }
 
   function fmt(n) {
-    return '$' + Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+    return '$' + Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
+
   function recalc() {
     const tick = SYMBOLS[currentSymbol].tickValue;
-    document.getElementById('result-dollar').textContent        = fmt(tick*points*contracts);
-    document.getElementById('result-per-contract').textContent  = fmt(tick*points);
-    document.getElementById('result-per-point').textContent     = fmt(tick*contracts);
-    document.getElementById('result-sub').textContent           =
-      `${contracts} contract${contracts>1?'s':''} · ${points} pts · ${currentSymbol}`;
-    document.getElementById('result-tick-sub').textContent      =
-      `$${tick} × ${contracts} contract${contracts>1?'s':''}`;
+    document.getElementById('result-dollar').textContent = fmt(tick * points * contracts);
+    document.getElementById('result-per-contract').textContent = fmt(tick * points);
+    document.getElementById('result-per-point').textContent = fmt(tick * contracts);
+    document.getElementById('result-sub').textContent =
+      `${contracts} contract${contracts > 1 ? 's' : ''} · ${points} pts · ${currentSymbol}`;
+    document.getElementById('result-tick-sub').textContent =
+      `$${tick} × ${contracts} contract${contracts > 1 ? 's' : ''}`;
   }
+
   function buildRefTable() {
     const tick = SYMBOLS[currentSymbol].tickValue;
     document.getElementById('ref-sym-label').textContent = currentSymbol;
-    document.getElementById('ref-tbody').innerHTML = REF_POINTS.map(p=>`
+    document.getElementById('ref-tbody').innerHTML = REF_POINTS.map(p => `
       <tr>
         <td class="pts-col">${p} pts</td>
-        <td class="dollar-col">${fmt(tick*p)}</td>
-        <td class="dollar-col">${fmt(tick*p*2)}</td>
-        <td class="dollar-col">${fmt(tick*p*5)}</td>
-      </tr>`).join('');
+        <td class="dollar-col">${fmt(tick * p)}</td>
+        <td class="dollar-col">${fmt(tick * p * 2)}</td>
+        <td class="dollar-col">${fmt(tick * p * 5)}</td>
+      </tr>
+    `).join('');
   }
 
-  function init() {
-    setSymbol(currentSymbol);
-    document.getElementById('contracts-input').value  = contracts;
-    document.getElementById('contracts-slider').value = Math.min(contracts,20);
-    document.getElementById('points-input').value     = points;
-    document.getElementById('points-slider').value    = Math.min(points,200);
-    recalc(); buildRefTable();
-  }
-
-  init();
+  recalc();
+  buildRefTable();
 </script>
 
 </body>
