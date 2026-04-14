@@ -3,11 +3,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Futures P&L Calculator</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 
-<!-- For browser tab icon -->
+  <!-- For browser tab icon -->
 <link rel="icon" href="IMG_5416.jpeg" type="image/x-icon">
 
 <!-- For Apple devices (Add to Home Screen) -->
@@ -15,8 +15,6 @@
 
 <!-- Optional: For Android Chrome -->
 <link rel="manifest" href="manifest.json">
-
-
   
   <style>
   :root {
@@ -25,7 +23,7 @@
     --surface2: #D6EBE8;
     --teal: #4A9E96;
     --teal-light: #74BDB7;
-    --teal-muted: #C2DFDd;
+    --teal-muted: #C2DFDD;
     --sage: #6BAA8E;
     --sage-light: #96C4AD;
     --sage-muted: #D4EBE1;
@@ -49,6 +47,8 @@ font-family: ‘DM Sans’, sans-serif;
 color: var(–ink);
 min-height: 100vh;
 padding: 0 0 60px;
+/* Prevent double-tap zoom on the whole page */
+touch-action: manipulation;
 }
 
 /* HEADER */
@@ -114,6 +114,8 @@ border-bottom: 2px solid transparent;
 transition: all 0.22s;
 position: relative;
 top: 1px;
+touch-action: manipulation;
+-webkit-tap-highlight-color: transparent;
 }
 .tab-btn.active {
 color: var(–ink);
@@ -205,8 +207,8 @@ align-items: center;
 gap: 8px;
 }
 .pm-btn {
-width: 30px;
-height: 30px;
+width: 36px;
+height: 36px;
 border-radius: 50%;
 border: 1.5px solid var(–border);
 background: var(–white);
@@ -220,6 +222,8 @@ justify-content: center;
 flex-shrink: 0;
 transition: background 0.15s, border-color 0.15s, transform 0.1s;
 user-select: none;
+touch-action: manipulation;
+-webkit-tap-highlight-color: transparent;
 }
 .pm-btn:active {
 transform: scale(0.9);
@@ -235,6 +239,7 @@ background: linear-gradient(90deg, var(–teal-muted), var(–sky-muted));
 border-radius: 4px;
 outline: none;
 cursor: pointer;
+touch-action: manipulation;
 }
 .slider-row input[type=range]::-webkit-slider-runnable-track {
 height: 4px;
@@ -244,9 +249,9 @@ background: linear-gradient(90deg, var(–teal-muted), var(–sky-muted));
 .slider-row input[type=range]::-webkit-slider-thumb {
 -webkit-appearance: none;
 appearance: none;
-width: 22px;
-height: 22px;
-margin-top: -9px;
+width: 28px;
+height: 28px;
+margin-top: -12px;
 border-radius: 50%;
 background: linear-gradient(135deg, var(–teal-light), var(–sky));
 cursor: pointer;
@@ -259,8 +264,8 @@ border-radius: 4px;
 background: linear-gradient(90deg, var(–teal-muted), var(–sky-muted));
 }
 .slider-row input[type=range]::-moz-range-thumb {
-width: 22px;
-height: 22px;
+width: 28px;
+height: 28px;
 border-radius: 50%;
 background: linear-gradient(135deg, var(–teal-light), var(–sky));
 cursor: pointer;
@@ -279,6 +284,7 @@ color: var(–ink);
 text-align: center;
 outline: none;
 transition: border-color 0.2s, box-shadow 0.2s;
+touch-action: manipulation;
 }
 .number-input:focus {
 border-color: var(–teal-light);
@@ -489,9 +495,31 @@ color: var(–ink-soft);
   };
 
   const REF_POINTS = [5, 10, 15, 20, 25, 30, 50, 100];
-  let currentSymbol = 'MNQ';
-  let contracts = 1;
-  let points = 15;
+  const STORAGE_KEY = 'futures-pnl-state';
+
+  // Load saved state or use defaults
+  function loadState() {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) return JSON.parse(saved);
+    } catch(e) {}
+    return { symbol: 'MNQ', contracts: 1, points: 15 };
+  }
+
+  function saveState() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        symbol: currentSymbol,
+        contracts: contracts,
+        points: points
+      }));
+    } catch(e) {}
+  }
+
+  const initialState = loadState();
+  let currentSymbol = initialState.symbol;
+  let contracts = initialState.contracts;
+  let points = initialState.points;
 
   function setSymbol(sym) {
     currentSymbol = sym;
@@ -502,6 +530,7 @@ color: var(–ink-soft);
     document.getElementById('card-symbol').textContent = s.name;
     document.getElementById('card-desc').textContent = s.desc;
     document.getElementById('card-tick').innerHTML = `$${s.tickValue}<span style="font-size:1rem">/pt</span>`;
+    saveState();
     recalc();
     buildRefTable();
   }
@@ -510,6 +539,7 @@ color: var(–ink-soft);
     document.getElementById(`${field}-input`).value = val;
     if (field === 'contracts') contracts = parseInt(val) || 1;
     if (field === 'points') points = parseFloat(val) || 0;
+    saveState();
     recalc();
   }
 
@@ -518,6 +548,7 @@ color: var(–ink-soft);
     document.getElementById(`${field}-slider`).value = Math.min(parseFloat(val) || 0, max);
     if (field === 'contracts') contracts = parseInt(val) || 1;
     if (field === 'points') points = parseFloat(val) || 0;
+    saveState();
     recalc();
   }
 
@@ -531,6 +562,7 @@ color: var(–ink-soft);
       document.getElementById('points-input').value = points;
       document.getElementById('points-slider').value = Math.min(points, 200);
     }
+    saveState();
     recalc();
   }
 
@@ -562,8 +594,24 @@ color: var(–ink-soft);
     `).join('');
   }
 
-  recalc();
-  buildRefTable();
+  // Initialize with saved state
+  function init() {
+    // Set symbol (updates card + tabs)
+    setSymbol(currentSymbol);
+
+    // Restore contracts
+    document.getElementById('contracts-input').value = contracts;
+    document.getElementById('contracts-slider').value = Math.min(contracts, 20);
+
+    // Restore points
+    document.getElementById('points-input').value = points;
+    document.getElementById('points-slider').value = Math.min(points, 200);
+
+    recalc();
+    buildRefTable();
+  }
+
+  init();
 </script>
 
 </body>
