@@ -16,7 +16,9 @@
 <!-- Optional: For Android Chrome -->
 <link rel="manifest" href="manifest.json">
 
-<style>
+
+  
+  <style>
   :root {
     --bg: #EEF6F5;
     --surface: #E4F2F0;
@@ -227,15 +229,38 @@ border-color: var(–teal-light);
 .slider-row input[type=range] {
 flex: 1;
 -webkit-appearance: none;
+appearance: none;
 height: 4px;
 background: linear-gradient(90deg, var(–teal-muted), var(–sky-muted));
 border-radius: 4px;
 outline: none;
+cursor: pointer;
+}
+.slider-row input[type=range]::-webkit-slider-runnable-track {
+height: 4px;
+border-radius: 4px;
+background: linear-gradient(90deg, var(–teal-muted), var(–sky-muted));
 }
 .slider-row input[type=range]::-webkit-slider-thumb {
 -webkit-appearance: none;
-width: 20px;
-height: 20px;
+appearance: none;
+width: 22px;
+height: 22px;
+margin-top: -9px;
+border-radius: 50%;
+background: linear-gradient(135deg, var(–teal-light), var(–sky));
+cursor: pointer;
+box-shadow: 0 2px 8px rgba(74,158,150,0.4);
+border: 2px solid #fff;
+}
+.slider-row input[type=range]::-moz-range-track {
+height: 4px;
+border-radius: 4px;
+background: linear-gradient(90deg, var(–teal-muted), var(–sky-muted));
+}
+.slider-row input[type=range]::-moz-range-thumb {
+width: 22px;
+height: 22px;
 border-radius: 50%;
 background: linear-gradient(135deg, var(–teal-light), var(–sky));
 cursor: pointer;
