@@ -3,484 +3,445 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Futures P&L</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
 <style>
-  /* ── RESET ── */
-  * { -webkit-box-sizing: border-box; box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  html { -webkit-text-size-adjust: 100%; }
+
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+button { font-family: inherit; cursor: pointer; }
+input  { font-family: inherit; }
 
 /* ── TOKENS ── */
 :root {
-–bg:        #EAF2F2;
-–surface:   #F2F8F8;
-–card:      #FFFFFF;
-–teal:      #5B9EA0;
-–teal-dark: #3E7A7C;
-–teal-mid:  #7BB8BA;
-–teal-pale: #C8E0E0;
-–teal-wash: #DFF0F0;
-–ink:       #2C4A4A;
-–ink-mid:   #4E7070;
-–ink-soft:  #7AA0A0;
-–ink-faint: #A8C4C4;
-–border:    #C4DADA;
-–white:     #FFFFFF;
-–radius:    16px;
-–radius-sm: 10px;
+–bg:        #ECF5F4;
+–surface:   #E0EFED;
+–surface2:  #D2E8E5;
+–border:    #B4D4CF;
+–teal-1:    #A2DDD6;
+–teal-2:    #78C9C0;
+–teal-3:    #4EADA4;
+–sky-1:     #A0D4E8;
+–sky-2:     #78BCE0;
+–sage-1:    #A4D9BE;
+–ink-0:     #0F2926;
+–ink-1:     #1E3C38;
+–ink-2:     #2E5550;
+–ink-3:     #3E6E68;
+–ink-4:     #5A8880;
+–card-bg:   #F8FEFE;
 }
 
+/* ── BASE ── */
 body {
-background-color: var(–bg);
-font-family: ‘DM Sans’, -apple-system, sans-serif;
-color: var(–ink);
+background-color: #ECF5F4;
+font-family: ‘DM Sans’, sans-serif;
+color: #1E3C38;
 min-height: 100vh;
 padding-bottom: 60px;
 -webkit-font-smoothing: antialiased;
 }
 
-/* ── PROGRESS BAR ── */
-.progress-bar-wrap {
-background-color: var(–surface);
-border-bottom: 1px solid var(–border);
-padding: 12px 20px;
-display: -webkit-flex;
-display: flex;
--webkit-align-items: center;
-align-items: center;
-gap: 12px;
-}
-.progress-label {
-font-size: 10px;
-font-weight: 500;
-letter-spacing: 0.12em;
-text-transform: uppercase;
-color: var(–teal-dark);
-white-space: nowrap;
-}
-.progress-track {
--webkit-flex: 1;
-flex: 1;
-height: 5px;
-background-color: var(–teal-pale);
-border-radius: 99px;
+/* ── HEADER ── */
+.header {
+background-color: #9ED8D2;
+padding: 36px 24px 28px;
+text-align: center;
+position: relative;
 overflow: hidden;
 }
-.progress-fill {
-height: 100%;
-background-color: var(–teal);
-border-radius: 99px;
-width: 0%;
--webkit-transition: width 0.4s ease;
-transition: width 0.4s ease;
+.orb {
+position: absolute;
+border-radius: 50%;
+background-color: rgba(255,255,255,0.16);
 }
-.progress-count {
-font-size: 11px;
-color: var(–ink-mid);
-white-space: nowrap;
-}
-
-/* ── HEADER ── */
-header {
-background-color: var(–surface);
-padding: 28px 24px 24px;
-text-align: center;
-border-bottom: 1px solid var(–border);
-}
-.header-eyebrow {
-font-size: 10px;
-font-weight: 400;
-letter-spacing: 0.18em;
-text-transform: uppercase;
-color: var(–ink-soft);
-margin-bottom: 8px;
-}
-.header-title {
-font-family: ‘Cormorant Garamond’, Georgia, serif;
-font-size: 42px;
+.orb-a { width: 110px; height: 110px; top: -34px; right: -26px; }
+.orb-b { width: 70px;  height: 70px;  bottom: -20px; left: -18px; }
+.orb-c { width: 50px;  height: 50px;  top: 10px; left: 30px; opacity: 0.5; }
+.header h1 {
+font-family: ‘Cormorant Garamond’, serif;
 font-weight: 300;
-color: var(–teal-dark);
-letter-spacing: 0.02em;
-line-height: 1;
+font-size: 2.1rem;
+letter-spacing: 0.04em;
+color: #0F2926;
+position: relative;
 }
-.header-rule {
-width: 36px;
-height: 1px;
-background-color: var(–teal-mid);
-margin: 10px auto;
-}
-.header-sub {
-font-size: 10px;
-letter-spacing: 0.16em;
+.header p {
+font-size: 0.68rem;
+letter-spacing: 0.2em;
 text-transform: uppercase;
-color: var(–ink-soft);
-}
-.header-hearts {
-margin-top: 10px;
-font-size: 18px;
-letter-spacing: 2px;
+color: #2E5550;
+margin-top: 6px;
+font-weight: 400;
+position: relative;
 }
 
-/* ── SYMBOL TABS ── */
-.symbol-tabs {
+/* ── TABS ── */
+.tabs {
 display: -webkit-flex;
 display: flex;
-background-color: var(–surface);
-border-bottom: 1px solid var(–border);
-padding: 0 16px;
-gap: 0;
+background-color: #E0EFED;
+border-bottom: 1px solid #B4D4CF;
 }
-.tab-btn {
+.tab {
 -webkit-flex: 1;
 flex: 1;
 padding: 13px 8px 11px;
 border: none;
 border-bottom: 2px solid transparent;
-background-color: transparent;
-cursor: pointer;
-font-family: ‘Cormorant Garamond’, Georgia, serif;
-font-size: 17px;
+background: transparent;
+color: #5A8880;
+font-family: ‘Cormorant Garamond’, serif;
+font-size: 1.15rem;
 font-weight: 400;
-color: var(–ink-faint);
-text-align: center;
--webkit-transition: color 0.2s, border-color 0.2s;
-transition: color 0.2s, border-color 0.2s;
 position: relative;
 top: 1px;
--webkit-appearance: none;
-appearance: none;
-outline: none;
 }
-.tab-btn.active {
-color: var(–teal-dark);
-border-bottom-color: var(–teal);
-background-color: transparent;
+.tab.active {
+color: #1E3C38;
+border-bottom-color: #4EADA4;
+background-color: #ECF5F4;
 }
-.tab-tick {
+.tab-sub {
 display: block;
 font-family: ‘DM Sans’, sans-serif;
-font-size: 9px;
+font-size: 0.58rem;
 letter-spacing: 0.1em;
 text-transform: uppercase;
-color: var(–ink-faint);
+color: #5A8880;
 margin-top: 2px;
+font-weight: 400;
 }
-.tab-btn.active .tab-tick { color: var(–teal); }
+.tab.active .tab-sub { color: #4EADA4; }
 
 /* ── MAIN ── */
-main { padding: 18px 16px; }
+main { padding: 20px 18px; }
 
 /* ── SYMBOL CARD ── */
-.symbol-card {
-background-color: var(–teal-dark);
-border-radius: var(–radius);
+.sym-card {
+background-color: #8ECFC8;
+border-radius: 16px;
 padding: 18px 20px;
-margin-bottom: 18px;
+margin-bottom: 22px;
 display: -webkit-flex;
 display: flex;
 -webkit-justify-content: space-between;
 justify-content: space-between;
 -webkit-align-items: center;
 align-items: center;
-border: 1px solid var(–teal-dark);
 position: relative;
 overflow: hidden;
+box-shadow: 0 4px 20px rgba(78,173,164,0.2);
 }
-.symbol-card-glow {
+.card-orb {
 position: absolute;
-top: -30px; right: -30px;
-width: 100px; height: 100px;
+top: -22px; right: -22px;
+width: 80px; height: 80px;
 border-radius: 50%;
-background-color: rgba(255,255,255,0.08);
+background-color: rgba(255,255,255,0.15);
 }
 .sym-name {
-font-family: ‘Cormorant Garamond’, Georgia, serif;
-font-size: 34px;
-font-weight: 300;
-color: #fff;
-letter-spacing: 0.03em;
+font-family: ‘Cormorant Garamond’, serif;
+font-size: 2.2rem;
+font-weight: 400;
+color: #0F2926;
+letter-spacing: 0.02em;
 position: relative;
 }
 .sym-desc {
-font-size: 10px;
-color: rgba(255,255,255,0.6);
+font-size: 0.66rem;
+color: #2E5550;
 text-transform: uppercase;
 letter-spacing: 0.14em;
-margin-top: 4px;
-font-weight: 300;
+margin-top: 3px;
+font-weight: 400;
 position: relative;
 }
 .tick-badge { text-align: right; position: relative; }
 .tick-label {
-font-size: 9px;
+font-size: 0.6rem;
 text-transform: uppercase;
-letter-spacing: 0.14em;
-color: rgba(255,255,255,0.5);
-margin-bottom: 2px;
+letter-spacing: 0.13em;
+color: #2E5550;
+font-weight: 500;
 }
 .tick-num {
-font-family: ‘Cormorant Garamond’, Georgia, serif;
-font-size: 26px;
-font-weight: 300;
-color: #fff;
-letter-spacing: 0.02em;
-}
-.tick-num span { font-size: 14px; }
-
-/* ── STEPPER INPUT GROUP ── */
-.input-group { margin-bottom: 16px; }
-.input-label {
-font-size: 10px;
-text-transform: uppercase;
-letter-spacing: 0.15em;
-color: var(–ink-soft);
-margin-bottom: 8px;
-display: block;
+font-family: ‘Cormorant Garamond’, serif;
+font-size: 1.7rem;
 font-weight: 400;
+color: #0F2926;
+}
+.tick-num span { font-size: 1rem; }
+
+/* ── INPUT GROUPS ── */
+.input-group { margin-bottom: 20px; }
+.input-label {
+display: block;
+font-size: 0.65rem;
+text-transform: uppercase;
+letter-spacing: 0.16em;
+color: #3E6E68;
+margin-bottom: 9px;
+font-weight: 500;
 }
 
-.stepper-row {
-background-color: var(–card);
-border: 1px solid var(–border);
-border-radius: var(–radius);
+/* ── SLIDER ROW ── */
+.slider-row {
 display: -webkit-flex;
 display: flex;
 -webkit-align-items: center;
 align-items: center;
-overflow: hidden;
-height: 52px;
+gap: 10px;
 }
-.step-btn {
-width: 52px;
-height: 52px;
-min-width: 52px;
-border: none;
-background-color: var(–teal-wash);
-color: var(–teal-dark);
-font-size: 22px;
-font-weight: 300;
-cursor: pointer;
+
+/* ── +/- BUTTONS ── */
+.pm-btn {
+width: 32px;
+height: 32px;
+min-width: 32px;
+border-radius: 50%;
+border: 1.5px solid #B4D4CF;
+background-color: #F8FEFE;
+color: #2E5550;
+font-size: 1.2rem;
+line-height: 1;
 display: -webkit-flex;
 display: flex;
 -webkit-align-items: center;
 align-items: center;
 -webkit-justify-content: center;
 justify-content: center;
--webkit-transition: background-color 0.15s;
-transition: background-color 0.15s;
--webkit-appearance: none;
-appearance: none;
-outline: none;
--webkit-tap-highlight-color: transparent;
-line-height: 1;
-font-family: ‘DM Sans’, sans-serif;
-}
-.step-btn:active { background-color: var(–teal-pale); }
-.step-divider {
-width: 1px;
-height: 28px;
-background-color: var(–border);
 -webkit-flex-shrink: 0;
 flex-shrink: 0;
+-webkit-tap-highlight-color: transparent;
+-webkit-user-select: none;
+user-select: none;
 }
-.step-display {
--webkit-flex: 1;
-flex: 1;
-text-align: center;
-font-family: ‘Cormorant Garamond’, Georgia, serif;
-font-size: 24px;
-font-weight: 300;
-color: var(–ink);
-border: none;
-background-color: transparent;
-outline: none;
-padding: 0 4px;
--webkit-appearance: none;
-appearance: none;
+.pm-btn:active {
+background-color: #A2DDD6;
+border-color: #78C9C0;
 }
 
-/* ── SLIDER (kept for fine control) ── */
-.slider-wrap {
-margin-top: 10px;
-padding: 0 4px;
+/* ── RANGE SLIDER — fully Safari-safe ── */
+.range-wrap {
+-webkit-flex: 1;
+flex: 1;
+position: relative;
+height: 32px;
+display: -webkit-flex;
+display: flex;
+-webkit-align-items: center;
+align-items: center;
 }
-input[type=range] {
+
+/* The track background uses a plain solid color — Safari handles this reliably */
+input[type=“range”] {
 -webkit-appearance: none;
 appearance: none;
 width: 100%;
-height: 4px;
-background-color: var(–teal-pale);
-border-radius: 99px;
+height: 5px;
+border-radius: 5px;
+background-color: #D2E8E5;
 outline: none;
+cursor: pointer;
+border: none;
+padding: 0;
+}
+
+/* Safari / Chrome webkit thumb */
+input[type=“range”]::-webkit-slider-container { }
+input[type=“range”]::-webkit-slider-runnable-track {
+height: 5px;
+border-radius: 5px;
+background-color: #D2E8E5;
+}
+input[type=“range”]::-webkit-slider-thumb {
+-webkit-appearance: none;
+appearance: none;
+width: 26px;
+height: 26px;
+border-radius: 50%;
+background-color: #78C9C0;
+border: 3px solid #FFFFFF;
+box-shadow: 0 1px 6px rgba(78,173,164,0.4);
+cursor: pointer;
+margin-top: -10px;
+}
+
+/* Firefox */
+input[type=“range”]::-moz-range-track {
+height: 5px;
+border-radius: 5px;
+background-color: #D2E8E5;
 border: none;
 }
-input[type=range]::-webkit-slider-thumb {
--webkit-appearance: none;
-width: 22px;
-height: 22px;
+input[type=“range”]::-moz-range-progress {
+height: 5px;
+border-radius: 5px;
+background-color: #78C9C0;
+}
+input[type=“range”]::-moz-range-thumb {
+width: 26px;
+height: 26px;
 border-radius: 50%;
-background-color: var(–teal);
-border: 3px solid #fff;
--webkit-box-shadow: 0 1px 6px rgba(91,158,160,0.4);
-box-shadow: 0 1px 6px rgba(91,158,160,0.4);
+background-color: #78C9C0;
+border: 3px solid #FFFFFF;
+box-shadow: 0 1px 6px rgba(78,173,164,0.4);
 cursor: pointer;
 }
 
-/* ── RESULT CARDS ── */
+/* ── NUMBER INPUT ── */
+.num-input {
+width: 74px;
+border: 1.5px solid #B4D4CF;
+border-radius: 10px;
+background-color: #F8FEFE;
+padding: 8px 6px;
+font-family: ‘Cormorant Garamond’, serif;
+font-size: 1.2rem;
+color: #1E3C38;
+text-align: center;
+outline: none;
+-webkit-appearance: none;
+appearance: none;
+}
+.num-input:focus {
+border-color: #78C9C0;
+box-shadow: 0 0 0 3px rgba(120,201,192,0.22);
+}
+.num-input::-webkit-inner-spin-button,
+.num-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.num-input[type=“number”] { -moz-appearance: textfield; }
+
+/* ── RESULTS ── */
 .results-grid {
 display: -webkit-flex;
 display: flex;
 -webkit-flex-wrap: wrap;
 flex-wrap: wrap;
 gap: 10px;
-margin-top: 18px;
+margin-top: 20px;
 }
 .result-card {
-background-color: var(–card);
-border: 1px solid var(–border);
-border-radius: var(–radius);
-padding: 14px 16px;
-width: calc(50% - 5px);
--webkit-box-sizing: border-box;
-box-sizing: border-box;
+background-color: #F8FEFE;
+border: 1.5px solid #B4D4CF;
+border-radius: 14px;
+padding: 15px 17px;
+-webkit-flex: 1 1 calc(50% - 5px);
+flex: 1 1 calc(50% - 5px);
+min-width: 0;
 }
-.result-card.full-width {
-width: 100%;
-background-color: var(–teal-dark);
-border-color: var(–teal-dark);
+.result-card.full {
+-webkit-flex: 1 1 100%;
+flex: 1 1 100%;
+background-color: #90D4CE;
+border-color: transparent;
+box-shadow: 0 4px 20px rgba(78,173,164,0.18);
 }
 .rc-label {
-font-size: 9px;
+font-size: 0.61rem;
 text-transform: uppercase;
 letter-spacing: 0.14em;
-color: var(–ink-soft);
-font-weight: 400;
+color: #3E6E68;
+font-weight: 500;
 }
-.result-card.full-width .rc-label { color: rgba(255,255,255,0.6); }
+.result-card.full .rc-label { color: #1E3C38; }
 .rc-value {
-font-family: ‘Cormorant Garamond’, Georgia, serif;
-font-size: 28px;
-font-weight: 300;
-color: var(–ink);
+font-family: ‘Cormorant Garamond’, serif;
+font-size: 1.95rem;
+font-weight: 400;
+color: #1E3C38;
 margin-top: 4px;
 letter-spacing: 0.01em;
 line-height: 1.1;
 }
-.result-card.full-width .rc-value {
-font-size: 38px;
-color: #fff;
+.result-card.full .rc-value {
+font-size: 2.6rem;
+color: #0F2926;
 }
 .rc-sub {
-font-size: 10px;
-color: var(–ink-soft);
-margin-top: 3px;
-font-weight: 300;
+font-size: 0.62rem;
+color: #3E6E68;
+margin-top: 4px;
 }
-.result-card.full-width .rc-sub { color: rgba(255,255,255,0.55); }
+.result-card.full .rc-sub { color: #2E5550; }
 
 /* ── DIVIDER ── */
 .divider {
 height: 1px;
-background-color: var(–border);
-margin: 22px 0;
+background-color: #B4D4CF;
+margin: 26px 0;
+opacity: 0.7;
 }
 
-/* ── REFERENCE TABLE ── */
+/* ── REF TABLE ── */
 .ref-title {
-font-family: ‘Cormorant Garamond’, Georgia, serif;
-font-size: 16px;
-font-weight: 400;
+font-family: ‘Cormorant Garamond’, serif;
+font-size: 1.05rem;
 font-style: italic;
+font-weight: 400;
 letter-spacing: 0.05em;
-color: var(–ink-mid);
-margin-bottom: 10px;
+color: #2E5550;
+margin-bottom: 11px;
 padding-bottom: 8px;
-border-bottom: 1px solid var(–border);
+border-bottom: 1px solid #B4D4CF;
 }
 .ref-table {
 width: 100%;
 border-collapse: collapse;
 }
 .ref-table th {
-font-size: 9px;
+font-size: 0.6rem;
 text-transform: uppercase;
 letter-spacing: 0.12em;
-color: var(–ink-soft);
-font-weight: 400;
-padding: 7px 10px;
+color: #2E5550;
+font-weight: 600;
+padding: 9px 10px;
 text-align: left;
-background-color: var(–surface);
-border: 1px solid var(–border);
+background-color: #D2E8E5;
+border: 1px solid #B4D4CF;
 }
 .ref-table td {
 padding: 9px 10px;
-border: 1px solid var(–border);
-font-size: 13px;
+font-size: 0.84rem;
+border: 1px solid #B4D4CF;
+color: #1E3C38;
 }
-.ref-table tr:nth-child(even) td { background-color: var(–teal-wash); }
-.ref-table tr:nth-child(odd) td { background-color: var(–card); }
-.pts-col { color: var(–ink-soft); font-size: 12px; }
+.ref-table tr:nth-child(odd) td  { background-color: #F8FEFE; }
+.ref-table tr:nth-child(even) td { background-color: #E0EFED; }
+.pts-col  { color: #2E5550; font-size: 0.8rem; font-weight: 500; }
 .dollar-col {
-font-family: ‘Cormorant Garamond’, Georgia, serif;
-font-size: 15px;
-font-weight: 400;
-color: var(–teal-dark);
+font-family: ‘Cormorant Garamond’, serif;
+font-size: 1rem;
+font-weight: 500;
+color: #2E5550;
 }
 
 </style>
 </head>
 <body>
 
-<!-- Progress bar (decorative, mirrors ICC app feel) -->
-
-<div class="progress-bar-wrap">
-  <span class="progress-label">P&L Calc</span>
-  <div class="progress-track">
-    <div class="progress-fill" id="progress-fill" style="width:100%"></div>
-  </div>
-  <span class="progress-count" id="progress-count">MNQ · $2/pt</span>
-</div>
-
-<!-- Header -->
-
-<header>
-  <div class="header-eyebrow">One Disciplined Trade at a Time</div>
-  <div class="header-title">P&amp;L Calculator</div>
-  <div class="header-rule"></div>
-  <div class="header-sub">Points · Contracts · Dollars</div>
-  <div class="header-hearts">🩵💙🩵</div>
+<header class="header">
+  <div class="orb orb-a"></div>
+  <div class="orb orb-b"></div>
+  <div class="orb orb-c"></div>
+  <h1>Futures P&amp;L</h1>
+  <p>Points &middot; Contracts &middot; Dollars</p>
 </header>
 
-<!-- Symbol Tabs -->
-
-<div class="symbol-tabs">
-  <button class="tab-btn active" id="tab-MNQ" onclick="setSymbol('MNQ')">
-    MNQ
-    <span class="tab-tick">$2 / pt</span>
-  </button>
-  <button class="tab-btn" id="tab-MES" onclick="setSymbol('MES')">
-    MES
-    <span class="tab-tick">$5 / pt</span>
-  </button>
-  <button class="tab-btn" id="tab-MGC" onclick="setSymbol('MGC')">
-    MGC
-    <span class="tab-tick">$10 / pt</span>
-  </button>
+<div class="tabs">
+  <button class="tab active" onclick="setSymbol('MNQ')">MNQ<span class="tab-sub">$2 / pt</span></button>
+  <button class="tab"        onclick="setSymbol('MES')">MES<span class="tab-sub">$5 / pt</span></button>
+  <button class="tab"        onclick="setSymbol('MGC')">MGC<span class="tab-sub">$10 / pt</span></button>
 </div>
-
-<!-- Main content -->
 
 <main>
 
-  <!-- Symbol card -->
-
-  <div class="symbol-card">
-    <div class="symbol-card-glow"></div>
+  <div class="sym-card">
+    <div class="card-orb"></div>
     <div>
-      <div class="sym-name" id="card-symbol">MNQ</div>
+      <div class="sym-name" id="card-sym">MNQ</div>
       <div class="sym-desc" id="card-desc">Micro Nasdaq-100</div>
     </div>
     <div class="tick-badge">
@@ -489,189 +450,153 @@ color: var(–teal-dark);
     </div>
   </div>
 
-  <!-- Contracts stepper -->
-
   <div class="input-group">
     <label class="input-label">Contracts</label>
-    <div class="stepper-row">
-      <button class="step-btn" onclick="step('contracts', -1)">−</button>
-      <div class="step-divider"></div>
-      <input class="step-display" id="contracts-display" type="number" inputmode="numeric" min="1" max="99" value="1" onchange="setField('contracts', this.value)">
-      <div class="step-divider"></div>
-      <button class="step-btn" onclick="step('contracts', 1)">+</button>
-    </div>
-    <div class="slider-wrap">
-      <input type="range" id="contracts-slider" min="1" max="20" value="1" oninput="sliderUpdate('contracts', this.value)">
+    <div class="slider-row">
+      <button class="pm-btn" onclick="step('c',-1)">&#8722;</button>
+      <div class="range-wrap">
+        <input type="range" id="c-slider" min="1" max="20" value="1" oninput="onSlider('c',this.value)">
+      </div>
+      <button class="pm-btn" onclick="step('c',1)">+</button>
+      <input type="number" class="num-input" id="c-input" min="1" max="99" value="1" oninput="onInput('c',this.value)">
     </div>
   </div>
-
-  <!-- Points stepper -->
 
   <div class="input-group">
     <label class="input-label">Points</label>
-    <div class="stepper-row">
-      <button class="step-btn" onclick="step('points', -1)">−</button>
-      <div class="step-divider"></div>
-      <input class="step-display" id="points-display" type="number" inputmode="decimal" min="0.25" max="9999" step="0.25" value="15" onchange="setField('points', this.value)">
-      <div class="step-divider"></div>
-      <button class="step-btn" onclick="step('points', 1)">+</button>
-    </div>
-    <div class="slider-wrap">
-      <input type="range" id="points-slider" min="1" max="200" value="15" oninput="sliderUpdate('points', this.value)">
+    <div class="slider-row">
+      <button class="pm-btn" onclick="step('p',-0.25)">&#8722;</button>
+      <div class="range-wrap">
+        <input type="range" id="p-slider" min="0.25" max="200" step="0.25" value="15" oninput="onSlider('p',this.value)">
+      </div>
+      <button class="pm-btn" onclick="step('p',0.25)">+</button>
+      <input type="number" class="num-input" id="p-input" min="0.25" max="9999" step="0.25" value="15" oninput="onInput('p',this.value)">
     </div>
   </div>
 
-  <!-- Results -->
-
   <div class="results-grid">
-    <div class="result-card full-width">
+    <div class="result-card full">
       <div class="rc-label">Total P&amp;L</div>
-      <div class="rc-value" id="result-total">$30.00</div>
-      <div class="rc-sub" id="result-sub">1 contract · 15 pts · MNQ</div>
+      <div class="rc-value" id="r-total">$30.00</div>
+      <div class="rc-sub"   id="r-sub">1 contract &middot; 15 pts &middot; MNQ</div>
     </div>
     <div class="result-card">
       <div class="rc-label">Per Contract</div>
-      <div class="rc-value" id="result-per-contract">$30.00</div>
-      <div class="rc-sub">single contract</div>
+      <div class="rc-value" id="r-percon">$30.00</div>
+      <div class="rc-sub">single contract value</div>
     </div>
     <div class="result-card">
       <div class="rc-label">Per Point</div>
-      <div class="rc-value" id="result-per-point">$2.00</div>
-      <div class="rc-sub" id="result-per-point-sub">$2 × 1 contract</div>
+      <div class="rc-value" id="r-perpt">$2.00</div>
+      <div class="rc-sub"   id="r-ticksub">$2 &times; 1 contract</div>
     </div>
   </div>
 
   <div class="divider"></div>
 
-  <!-- Reference table -->
-
-  <div class="ref-title">Quick Reference — <span id="ref-sym">MNQ</span></div>
+  <div class="ref-title">Quick Reference &mdash; <span id="ref-sym">MNQ</span></div>
   <table class="ref-table">
     <thead>
       <tr>
-        <th>Points</th>
-        <th>1 Contract</th>
-        <th>2 Contracts</th>
-        <th>5 Contracts</th>
+        <th>Points</th><th>1 Contract</th><th>2 Contracts</th><th>5 Contracts</th>
       </tr>
     </thead>
-    <tbody id="ref-tbody"></tbody>
+    <tbody id="ref-body"></tbody>
   </table>
 
 </main>
 
 <script>
-  var SYMBOLS = {
-    MNQ: { name: 'MNQ', desc: 'Micro Nasdaq-100',     tick: 2  },
-    MES: { name: 'MES', desc: 'Micro E-mini S&P 500', tick: 5  },
-    MGC: { name: 'MGC', desc: 'Micro Gold',           tick: 10 }
+  var SYMS = {
+    MNQ: { desc: 'Micro Nasdaq-100',      tick: 2  },
+    MES: { desc: 'Micro E-mini S&P 500',  tick: 5  },
+    MGC: { desc: 'Micro Gold',             tick: 10 }
   };
-  var REF_PTS = [5, 10, 15, 20, 25, 30, 50, 100];
+  var REF_PTS = [5,10,15,20,25,30,50,100];
+  var sym = 'MNQ', contracts = 1, points = 15;
 
-  var sym = 'MNQ';
-  var contracts = 1;
-  var points = 15;
-
-  function fmt(n) {
-    var s = Math.abs(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    return '$' + s;
-  }
-
-  function setSymbol(s) {
-    sym = s;
-    ['MNQ','MES','MGC'].forEach(function(k) {
-      var el = document.getElementById('tab-' + k);
-      if (el) { el.className = k === s ? 'tab-btn active' : 'tab-btn'; }
-    });
-    var info = SYMBOLS[s];
-    document.getElementById('card-symbol').textContent = info.name;
-    document.getElementById('card-desc').textContent = info.desc;
-    document.getElementById('card-tick').innerHTML = '$' + info.tick + '<span>/pt</span>';
-    document.getElementById('progress-count').textContent = info.name + ' · $' + info.tick + '/pt';
-    recalc();
-    buildTable();
-  }
-
-  function step(field, delta) {
-    if (field === 'contracts') {
-      contracts = Math.max(1, Math.min(99, contracts + delta));
-    } else {
-      points = Math.max(0.25, Math.min(9999, Math.round((points + delta * 0.25) * 4) / 4));
-      if (delta === 1 || delta === -1) points = Math.max(1, Math.min(9999, contracts === contracts ? points + (delta > 0 ? 0.75 : -0.75) : points)); // whole pts
-      points = Math.max(0.25, Math.min(9999, Math.round((parseFloat(document.getElementById('points-display').value) + delta) * 1) ));
-    }
-    syncDisplays();
-    recalc();
-  }
-
-  function setField(field, val) {
-    var n = parseFloat(val);
-    if (isNaN(n)) return;
-    if (field === 'contracts') contracts = Math.max(1, Math.min(99, Math.round(n)));
-    if (field === 'points') points = Math.max(0.25, Math.min(9999, n));
-    syncDisplays();
-    recalc();
-  }
-
-  function sliderUpdate(field, val) {
-    var n = parseFloat(val);
-    if (field === 'contracts') contracts = Math.round(n);
-    if (field === 'points') points = n;
-    syncDisplays();
-    recalc();
-  }
-
-  function syncDisplays() {
-    var cd = document.getElementById('contracts-display');
-    var cs = document.getElementById('contracts-slider');
-    var pd = document.getElementById('points-display');
-    var ps = document.getElementById('points-slider');
-    if (cd) cd.value = contracts;
-    if (cs) cs.value = Math.min(contracts, 20);
-    if (pd) pd.value = points;
-    if (ps) ps.value = Math.min(points, 200);
+  function dollar(n) {
+    return '$' + Math.abs(n).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
   }
 
   function recalc() {
-    var tick = SYMBOLS[sym].tick;
-    var total = tick * points * contracts;
-    var perC  = tick * points;
-    var perPt = tick * contracts;
-    document.getElementById('result-total').textContent = fmt(total);
-    document.getElementById('result-per-contract').textContent = fmt(perC);
-    document.getElementById('result-per-point').textContent = fmt(perPt);
-    document.getElementById('result-sub').textContent =
-      contracts + ' contract' + (contracts > 1 ? 's' : '') + ' · ' + points + ' pts · ' + sym;
-    document.getElementById('result-per-point-sub').textContent =
-      '$' + tick + ' × ' + contracts + ' contract' + (contracts > 1 ? 's' : '');
+    var t = SYMS[sym].tick;
+    document.getElementById('r-total').textContent  = dollar(t * points * contracts);
+    document.getElementById('r-percon').textContent = dollar(t * points);
+    document.getElementById('r-perpt').textContent  = dollar(t * contracts);
+    document.getElementById('r-sub').textContent    =
+      contracts + ' contract' + (contracts > 1 ? 's' : '') + ' \u00B7 ' + points + ' pts \u00B7 ' + sym;
+    document.getElementById('r-ticksub').textContent =
+      '$' + t + ' \u00D7 ' + contracts + ' contract' + (contracts > 1 ? 's' : '');
   }
 
   function buildTable() {
-    var tick = SYMBOLS[sym].tick;
+    var t = SYMS[sym].tick;
     document.getElementById('ref-sym').textContent = sym;
     var rows = '';
     for (var i = 0; i < REF_PTS.length; i++) {
       var p = REF_PTS[i];
       rows += '<tr>' +
         '<td class="pts-col">' + p + ' pts</td>' +
-        '<td class="dollar-col">' + fmt(tick * p) + '</td>' +
-        '<td class="dollar-col">' + fmt(tick * p * 2) + '</td>' +
-        '<td class="dollar-col">' + fmt(tick * p * 5) + '</td>' +
+        '<td class="dollar-col">' + dollar(t*p)   + '</td>' +
+        '<td class="dollar-col">' + dollar(t*p*2)  + '</td>' +
+        '<td class="dollar-col">' + dollar(t*p*5)  + '</td>' +
         '</tr>';
     }
-    document.getElementById('ref-tbody').innerHTML = rows;
+    document.getElementById('ref-body').innerHTML = rows;
   }
 
-  // fix the step function for points — simple whole-number steps
-  step = function(field, delta) {
-    if (field === 'contracts') {
-      contracts = Math.max(1, Math.min(99, contracts + delta));
-    } else {
-      points = Math.max(1, Math.min(9999, points + delta));
+  function setSymbol(s) {
+    sym = s;
+    var tabs = document.querySelectorAll('.tab');
+    var keys = ['MNQ','MES','MGC'];
+    for (var i = 0; i < tabs.length; i++) {
+      if (keys[i] === s) tabs[i].classList.add('active');
+      else tabs[i].classList.remove('active');
     }
-    syncDisplays();
+    document.getElementById('card-sym').textContent  = s;
+    document.getElementById('card-desc').textContent = SYMS[s].desc;
+    document.getElementById('card-tick').innerHTML   = '$' + SYMS[s].tick + '<span>/pt</span>';
+    recalc(); buildTable();
+  }
+
+  function onSlider(field, val) {
+    val = parseFloat(val);
+    if (field === 'c') {
+      contracts = Math.max(1, Math.round(val));
+      document.getElementById('c-input').value = contracts;
+    } else {
+      points = Math.max(0.25, val);
+      document.getElementById('p-input').value = points;
+    }
     recalc();
-  };
+  }
+
+  function onInput(field, val) {
+    val = parseFloat(val);
+    if (isNaN(val)) return;
+    if (field === 'c') {
+      contracts = Math.max(1, Math.min(99, Math.round(val)));
+      document.getElementById('c-slider').value = Math.min(contracts, 20);
+    } else {
+      points = Math.max(0.25, val);
+      document.getElementById('p-slider').value = Math.min(points, 200);
+    }
+    recalc();
+  }
+
+  function step(field, delta) {
+    if (field === 'c') {
+      contracts = Math.max(1, Math.min(99, contracts + delta));
+      document.getElementById('c-input').value  = contracts;
+      document.getElementById('c-slider').value = Math.min(contracts, 20);
+    } else {
+      points = Math.max(0.25, Math.round((points + delta) * 4) / 4);
+      document.getElementById('p-input').value  = points;
+      document.getElementById('p-slider').value = Math.min(points, 200);
+    }
+    recalc();
+  }
 
   recalc();
   buildTable();
