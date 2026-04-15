@@ -3,622 +3,678 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Futures P&L Calculator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Futures P&L</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<!-- For browser tab icon -->
-<link rel="icon" href="IMG_5416.jpeg" type="image/x-icon">
+<style>
+  /* ── RESET ── */
+  * { -webkit-box-sizing: border-box; box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html { -webkit-text-size-adjust: 100%; }
 
-<!-- For Apple devices (Add to Home Screen) -->
-<link rel="apple-touch-icon" href="IMG_5416.jpeg">
-
-<!-- Optional: For Android Chrome -->
-<link rel="manifest" href="manifest.json">
-  <style>
-  :root {
-    --bg:         #EEF6F5;
-    --surface:    #E4F2F0;
-    --surface2:   #D6EBE8;
-    --teal:       #4A9E96;
-    --teal-light: #74BDB7;
-    --teal-muted: #C2DFDD;
-    --sky:        #7BBCD4;
-    --sky-muted:  #D0EAF5;
-    --ink:        #1C3A36;
-    --ink-soft:   #2E5C55;
-    --ink-mid:    #3D6B62;
-    --ink-faint:  #5A877F;
-    --border:     #7BBCB5;
-    --white:      #F4FAFA;
-  }
-
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-background: var(–bg);
-font-family: ‘DM Sans’, sans-serif;
-color: var(–ink);
-min-height: 100vh;
-padding: 0 0 60px;
--webkit-text-size-adjust: 100%;
+/* ── TOKENS ── */
+:root {
+–bg:        #EAF2F2;
+–surface:   #F2F8F8;
+–card:      #FFFFFF;
+–teal:      #5B9EA0;
+–teal-dark: #3E7A7C;
+–teal-mid:  #7BB8BA;
+–teal-pale: #C8E0E0;
+–teal-wash: #DFF0F0;
+–ink:       #2C4A4A;
+–ink-mid:   #4E7070;
+–ink-soft:  #7AA0A0;
+–ink-faint: #A8C4C4;
+–border:    #C4DADA;
+–white:     #FFFFFF;
+–radius:    16px;
+–radius-sm: 10px;
 }
 
-/* ── BUTTONS RESET ── */
-button {
--webkit-appearance: none;
-appearance: none;
-border: none;
-background: none;
-font: inherit;
-cursor: pointer;
-outline: none;
--webkit-tap-highlight-color: transparent;
-touch-action: manipulation;
+body {
+background-color: var(–bg);
+font-family: ‘DM Sans’, -apple-system, sans-serif;
+color: var(–ink);
+min-height: 100vh;
+padding-bottom: 60px;
+-webkit-font-smoothing: antialiased;
+}
+
+/* ── PROGRESS BAR ── */
+.progress-bar-wrap {
+background-color: var(–surface);
+border-bottom: 1px solid var(–border);
+padding: 12px 20px;
+display: -webkit-flex;
+display: flex;
+-webkit-align-items: center;
+align-items: center;
+gap: 12px;
+}
+.progress-label {
+font-size: 10px;
+font-weight: 500;
+letter-spacing: 0.12em;
+text-transform: uppercase;
+color: var(–teal-dark);
+white-space: nowrap;
+}
+.progress-track {
+-webkit-flex: 1;
+flex: 1;
+height: 5px;
+background-color: var(–teal-pale);
+border-radius: 99px;
+overflow: hidden;
+}
+.progress-fill {
+height: 100%;
+background-color: var(–teal);
+border-radius: 99px;
+width: 0%;
+-webkit-transition: width 0.4s ease;
+transition: width 0.4s ease;
+}
+.progress-count {
+font-size: 11px;
+color: var(–ink-mid);
+white-space: nowrap;
 }
 
 /* ── HEADER ── */
 header {
-background: linear-gradient(135deg, #5BBFB5 0%, #4AAEC8 50%, #5BA8D8 100%);
-padding: 36px 24px 28px;
+background-color: var(–surface);
+padding: 28px 24px 24px;
 text-align: center;
-position: relative;
-overflow: hidden;
-}
-header::before {
-content: ‘’;
-position: absolute;
-top: -30px; right: -30px;
-width: 120px; height: 120px;
-border-radius: 50%;
-background: rgba(255,255,255,0.15);
-}
-header::after {
-content: ‘’;
-position: absolute;
-bottom: -20px; left: -20px;
-width: 90px; height: 90px;
-border-radius: 50%;
-background: rgba(255,255,255,0.10);
-}
-header h1 {
-font-family: ‘Cormorant Garamond’, serif;
-font-weight: 300;
-font-size: 2.2rem;
-letter-spacing: 0.05em;
-color: #fff;
-position: relative;
-z-index: 1;
-}
-header p {
-font-size: 0.7rem;
-letter-spacing: 0.2em;
-text-transform: uppercase;
-color: rgba(255,255,255,0.85);
-margin-top: 6px;
-position: relative;
-z-index: 1;
-}
-
-/* ── TABS ── */
-.symbol-tabs {
-display: flex;
-background: var(–surface);
 border-bottom: 1px solid var(–border);
 }
+.header-eyebrow {
+font-size: 10px;
+font-weight: 400;
+letter-spacing: 0.18em;
+text-transform: uppercase;
+color: var(–ink-soft);
+margin-bottom: 8px;
+}
+.header-title {
+font-family: ‘Cormorant Garamond’, Georgia, serif;
+font-size: 42px;
+font-weight: 300;
+color: var(–teal-dark);
+letter-spacing: 0.02em;
+line-height: 1;
+}
+.header-rule {
+width: 36px;
+height: 1px;
+background-color: var(–teal-mid);
+margin: 10px auto;
+}
+.header-sub {
+font-size: 10px;
+letter-spacing: 0.16em;
+text-transform: uppercase;
+color: var(–ink-soft);
+}
+.header-hearts {
+margin-top: 10px;
+font-size: 18px;
+letter-spacing: 2px;
+}
+
+/* ── SYMBOL TABS ── */
+.symbol-tabs {
+display: -webkit-flex;
+display: flex;
+background-color: var(–surface);
+border-bottom: 1px solid var(–border);
+padding: 0 16px;
+gap: 0;
+}
 .tab-btn {
+-webkit-flex: 1;
 flex: 1;
-padding: 14px 8px 12px;
-font-family: ‘Cormorant Garamond’, serif;
-font-size: 1.2rem;
+padding: 13px 8px 11px;
+border: none;
+border-bottom: 2px solid transparent;
+background-color: transparent;
+cursor: pointer;
+font-family: ‘Cormorant Garamond’, Georgia, serif;
+font-size: 17px;
 font-weight: 400;
 color: var(–ink-faint);
-background: transparent;
-border-bottom: 2px solid transparent;
-margin-bottom: -2px;
 text-align: center;
-transition: color 0.2s, border-color 0.2s, background 0.2s;
+-webkit-transition: color 0.2s, border-color 0.2s;
+transition: color 0.2s, border-color 0.2s;
+position: relative;
+top: 1px;
+-webkit-appearance: none;
+appearance: none;
+outline: none;
 }
 .tab-btn.active {
-color: var(–teal);
+color: var(–teal-dark);
 border-bottom-color: var(–teal);
-background: var(–bg);
-font-weight: 500;
+background-color: transparent;
 }
-.tick-val {
+.tab-tick {
 display: block;
 font-family: ‘DM Sans’, sans-serif;
-font-size: 0.58rem;
+font-size: 9px;
 letter-spacing: 0.1em;
 text-transform: uppercase;
 color: var(–ink-faint);
 margin-top: 2px;
 }
-.tab-btn.active .tick-val { color: var(–teal); }
+.tab-btn.active .tab-tick { color: var(–teal); }
 
 /* ── MAIN ── */
-main { padding: 20px 18px; }
+main { padding: 18px 16px; }
 
 /* ── SYMBOL CARD ── */
 .symbol-card {
-background: linear-gradient(135deg, #5BBFB5 0%, #4AAEC8 60%, #5BA8D8 100%);
-border-radius: 16px;
-padding: 20px 22px;
-margin-bottom: 22px;
+background-color: var(–teal-dark);
+border-radius: var(–radius);
+padding: 18px 20px;
+margin-bottom: 18px;
+display: -webkit-flex;
 display: flex;
+-webkit-justify-content: space-between;
 justify-content: space-between;
+-webkit-align-items: center;
 align-items: center;
-box-shadow: 0 4px 20px rgba(74,158,150,0.35);
+border: 1px solid var(–teal-dark);
 position: relative;
 overflow: hidden;
 }
-.symbol-card::after {
-content: ‘’;
+.symbol-card-glow {
 position: absolute;
-top: -20px; right: -20px;
-width: 80px; height: 80px;
+top: -30px; right: -30px;
+width: 100px; height: 100px;
 border-radius: 50%;
-background: rgba(255,255,255,0.12);
+background-color: rgba(255,255,255,0.08);
 }
 .sym-name {
-font-family: ‘Cormorant Garamond’, serif;
-font-size: 2.2rem;
-font-weight: 400;
+font-family: ‘Cormorant Garamond’, Georgia, serif;
+font-size: 34px;
+font-weight: 300;
 color: #fff;
 letter-spacing: 0.03em;
+position: relative;
 }
 .sym-desc {
-font-size: 0.65rem;
-color: rgba(255,255,255,0.85);
+font-size: 10px;
+color: rgba(255,255,255,0.6);
 text-transform: uppercase;
-letter-spacing: 0.13em;
-margin-top: 3px;
+letter-spacing: 0.14em;
+margin-top: 4px;
+font-weight: 300;
+position: relative;
 }
-.tick-badge { text-align: right; position: relative; z-index: 1; }
+.tick-badge { text-align: right; position: relative; }
 .tick-label {
-font-size: 0.6rem;
+font-size: 9px;
 text-transform: uppercase;
-letter-spacing: 0.12em;
-color: rgba(255,255,255,0.8);
+letter-spacing: 0.14em;
+color: rgba(255,255,255,0.5);
+margin-bottom: 2px;
 }
 .tick-num {
-font-family: ‘Cormorant Garamond’, serif;
-font-size: 1.8rem;
-font-weight: 400;
+font-family: ‘Cormorant Garamond’, Georgia, serif;
+font-size: 26px;
+font-weight: 300;
 color: #fff;
+letter-spacing: 0.02em;
 }
-.tick-num span { font-size: 1rem; }
+.tick-num span { font-size: 14px; }
 
-/* ── INPUT GROUPS ── */
-.input-group { margin-bottom: 20px; }
+/* ── STEPPER INPUT GROUP ── */
+.input-group { margin-bottom: 16px; }
 .input-label {
-font-size: 0.67rem;
+font-size: 10px;
 text-transform: uppercase;
 letter-spacing: 0.15em;
-color: var(–ink-mid);
-margin-bottom: 10px;
+color: var(–ink-soft);
+margin-bottom: 8px;
 display: block;
-font-weight: 500;
+font-weight: 400;
 }
 
-/* ── CONTROL ROW ── */
-.control-row {
+.stepper-row {
+background-color: var(–card);
+border: 1px solid var(–border);
+border-radius: var(–radius);
+display: -webkit-flex;
 display: flex;
+-webkit-align-items: center;
 align-items: center;
-gap: 10px;
+overflow: hidden;
+height: 52px;
 }
-
-/* +/- buttons — fully explicit styles, high contrast */
-.pm-btn {
-width: 38px;
-height: 38px;
-min-width: 38px;
-border-radius: 50%;
-border: 1px solid var(–teal) !important;
-background: var(–white) !important;
-color: var(–teal) !important;
-font-size: 1.3rem;
+.step-btn {
+width: 52px;
+height: 52px;
+min-width: 52px;
+border: none;
+background-color: var(–teal-wash);
+color: var(–teal-dark);
+font-size: 22px;
 font-weight: 300;
-display: flex;
-align-items: center;
-justify-content: center;
-flex-shrink: 0;
-user-select: none;
--webkit-tap-highlight-color: transparent;
-touch-action: manipulation;
-transition: background 0.15s, transform 0.1s;
-/* Override Safari system button */
--webkit-appearance: none !important;
-line-height: 1;
-}
-.pm-btn:active {
-transform: scale(0.88);
-background: var(–teal-muted) !important;
-}
-
-/* ── CUSTOM SLIDER (div-based, 100% iOS safe) ── */
-.slider-wrap {
-flex: 1;
-position: relative;
-height: 38px;
-display: flex;
-align-items: center;
 cursor: pointer;
-touch-action: none;
-}
-.slider-track {
-width: 100%;
-height: 5px;
-border-radius: 5px;
-background: var(–surface2);
-border: 1px solid var(–border);
-position: relative;
-overflow: visible;
-}
-.slider-fill {
-height: 100%;
-border-radius: 5px;
-background: linear-gradient(90deg, var(–teal), var(–sky));
-position: absolute;
-top: 0; left: 0;
-pointer-events: none;
-}
-.slider-thumb {
-width: 28px;
-height: 28px;
-border-radius: 50%;
-background: linear-gradient(135deg, var(–teal-light), var(–sky));
-border: 3px solid #fff;
-box-shadow: 0 2px 8px rgba(74,158,150,0.5), 0 0 0 2px var(–teal);
-position: absolute;
-top: 50%;
-transform: translate(-50%, -50%);
-pointer-events: none;
-transition: box-shadow 0.1s;
-}
-
-/* number box */
-.number-input {
-width: 70px;
-height: 38px;
-border: 1px solid var(–border);
-border-radius: 10px;
-background: var(–white);
-padding: 0 8px;
-font-family: ‘Cormorant Garamond’, serif;
-font-size: 1.2rem;
-color: var(–ink);
-text-align: center;
-outline: none;
+display: -webkit-flex;
+display: flex;
+-webkit-align-items: center;
+align-items: center;
+-webkit-justify-content: center;
+justify-content: center;
+-webkit-transition: background-color 0.15s;
+transition: background-color 0.15s;
 -webkit-appearance: none;
 appearance: none;
+outline: none;
 -webkit-tap-highlight-color: transparent;
-touch-action: manipulation;
+line-height: 1;
+font-family: ‘DM Sans’, sans-serif;
 }
-.number-input:focus {
-border-color: var(–teal);
-box-shadow: 0 0 0 2px var(–teal-muted);
+.step-btn:active { background-color: var(–teal-pale); }
+.step-divider {
+width: 1px;
+height: 28px;
+background-color: var(–border);
+-webkit-flex-shrink: 0;
+flex-shrink: 0;
 }
-
-/* ── RESULTS ── */
-.results-grid {
-display: grid;
-grid-template-columns: 1fr 1fr;
-gap: 10px;
-margin-top: 22px;
-}
-.result-card {
-background: var(–white);
-border: 1px solid var(–border);
-border-radius: 14px;
-padding: 14px 16px;
-}
-.result-card.highlight {
-background: linear-gradient(135deg, #5BBFB5 0%, #4AAEC8 60%, #5BA8D8 100%);
-border-color: transparent;
-grid-column: 1 / -1;
-box-shadow: 0 4px 18px rgba(74,158,150,0.4);
-}
-.rc-label {
-font-size: 0.62rem;
-text-transform: uppercase;
-letter-spacing: 0.13em;
-color: var(–ink-mid);
-font-weight: 500;
-}
-.highlight .rc-label { color: rgba(255,255,255,0.85); }
-.rc-value {
-font-family: ‘Cormorant Garamond’, serif;
-font-size: 2rem;
+.step-display {
+-webkit-flex: 1;
+flex: 1;
+text-align: center;
+font-family: ‘Cormorant Garamond’, Georgia, serif;
+font-size: 24px;
 font-weight: 300;
 color: var(–ink);
-margin-top: 3px;
+border: none;
+background-color: transparent;
+outline: none;
+padding: 0 4px;
+-webkit-appearance: none;
+appearance: none;
 }
-.highlight .rc-value { font-size: 2.6rem; color: #fff; }
+
+/* ── SLIDER (kept for fine control) ── */
+.slider-wrap {
+margin-top: 10px;
+padding: 0 4px;
+}
+input[type=range] {
+-webkit-appearance: none;
+appearance: none;
+width: 100%;
+height: 4px;
+background-color: var(–teal-pale);
+border-radius: 99px;
+outline: none;
+border: none;
+}
+input[type=range]::-webkit-slider-thumb {
+-webkit-appearance: none;
+width: 22px;
+height: 22px;
+border-radius: 50%;
+background-color: var(–teal);
+border: 3px solid #fff;
+-webkit-box-shadow: 0 1px 6px rgba(91,158,160,0.4);
+box-shadow: 0 1px 6px rgba(91,158,160,0.4);
+cursor: pointer;
+}
+
+/* ── RESULT CARDS ── */
+.results-grid {
+display: -webkit-flex;
+display: flex;
+-webkit-flex-wrap: wrap;
+flex-wrap: wrap;
+gap: 10px;
+margin-top: 18px;
+}
+.result-card {
+background-color: var(–card);
+border: 1px solid var(–border);
+border-radius: var(–radius);
+padding: 14px 16px;
+width: calc(50% - 5px);
+-webkit-box-sizing: border-box;
+box-sizing: border-box;
+}
+.result-card.full-width {
+width: 100%;
+background-color: var(–teal-dark);
+border-color: var(–teal-dark);
+}
+.rc-label {
+font-size: 9px;
+text-transform: uppercase;
+letter-spacing: 0.14em;
+color: var(–ink-soft);
+font-weight: 400;
+}
+.result-card.full-width .rc-label { color: rgba(255,255,255,0.6); }
+.rc-value {
+font-family: ‘Cormorant Garamond’, Georgia, serif;
+font-size: 28px;
+font-weight: 300;
+color: var(–ink);
+margin-top: 4px;
+letter-spacing: 0.01em;
+line-height: 1.1;
+}
+.result-card.full-width .rc-value {
+font-size: 38px;
+color: #fff;
+}
 .rc-sub {
-font-size: 0.63rem;
-color: var(–ink-mid);
+font-size: 10px;
+color: var(–ink-soft);
 margin-top: 3px;
+font-weight: 300;
 }
-.highlight .rc-sub { color: rgba(255,255,255,0.8); }
+.result-card.full-width .rc-sub { color: rgba(255,255,255,0.55); }
 
 /* ── DIVIDER ── */
 .divider {
 height: 1px;
-background: linear-gradient(90deg, transparent, var(–border), transparent);
-margin: 26px 0;
+background-color: var(–border);
+margin: 22px 0;
 }
 
-/* ── TABLE ── */
+/* ── REFERENCE TABLE ── */
 .ref-title {
-font-family: ‘Cormorant Garamond’, serif;
-font-size: 1.05rem;
+font-family: ‘Cormorant Garamond’, Georgia, serif;
+font-size: 16px;
+font-weight: 400;
 font-style: italic;
-letter-spacing: 0.06em;
-color: var(–ink-soft);
+letter-spacing: 0.05em;
+color: var(–ink-mid);
 margin-bottom: 10px;
-padding-bottom: 7px;
+padding-bottom: 8px;
 border-bottom: 1px solid var(–border);
 }
 .ref-table {
 width: 100%;
 border-collapse: collapse;
-overflow: hidden;
-border-radius: 10px;
-border: 1px solid var(–border);
 }
 .ref-table th {
-font-size: 0.6rem;
+font-size: 9px;
 text-transform: uppercase;
-letter-spacing: 0.1em;
+letter-spacing: 0.12em;
 color: var(–ink-soft);
-font-weight: 600;
-padding: 8px 10px;
+font-weight: 400;
+padding: 7px 10px;
 text-align: left;
-background: var(–surface2);
+background-color: var(–surface);
 border: 1px solid var(–border);
 }
 .ref-table td {
 padding: 9px 10px;
-font-size: 0.85rem;
 border: 1px solid var(–border);
-color: var(–ink);
+font-size: 13px;
 }
-.ref-table tr:nth-child(even) td { background: var(–surface); }
-.ref-table tr:nth-child(odd)  td { background: var(–white); }
-.pts-col    { color: var(–ink-soft); font-size: 0.82rem; font-weight: 500; }
-.dollar-col { font-family: ‘Cormorant Garamond’, serif; font-size: 1rem; color: var(–ink-soft); }
-</style>
+.ref-table tr:nth-child(even) td { background-color: var(–teal-wash); }
+.ref-table tr:nth-child(odd) td { background-color: var(–card); }
+.pts-col { color: var(–ink-soft); font-size: 12px; }
+.dollar-col {
+font-family: ‘Cormorant Garamond’, Georgia, serif;
+font-size: 15px;
+font-weight: 400;
+color: var(–teal-dark);
+}
 
+</style>
 </head>
 <body>
 
+<!-- Progress bar (decorative, mirrors ICC app feel) -->
+
+<div class="progress-bar-wrap">
+  <span class="progress-label">P&L Calc</span>
+  <div class="progress-track">
+    <div class="progress-fill" id="progress-fill" style="width:100%"></div>
+  </div>
+  <span class="progress-count" id="progress-count">MNQ · $2/pt</span>
+</div>
+
+<!-- Header -->
+
 <header>
-  <h1>Futures P&L</h1>
-  <p>Points · Contracts · Dollars</p>
+  <div class="header-eyebrow">One Disciplined Trade at a Time</div>
+  <div class="header-title">P&amp;L Calculator</div>
+  <div class="header-rule"></div>
+  <div class="header-sub">Points · Contracts · Dollars</div>
+  <div class="header-hearts">🩵💙🩵</div>
 </header>
 
+<!-- Symbol Tabs -->
+
 <div class="symbol-tabs">
-  <button class="tab-btn active" id="tab-MNQ" onclick="setSymbol('MNQ')">MNQ<span class="tick-val">$2 / pt</span></button>
-  <button class="tab-btn"        id="tab-MES" onclick="setSymbol('MES')">MES<span class="tick-val">$5 / pt</span></button>
-  <button class="tab-btn"        id="tab-MGC" onclick="setSymbol('MGC')">MGC<span class="tick-val">$10 / pt</span></button>
+  <button class="tab-btn active" id="tab-MNQ" onclick="setSymbol('MNQ')">
+    MNQ
+    <span class="tab-tick">$2 / pt</span>
+  </button>
+  <button class="tab-btn" id="tab-MES" onclick="setSymbol('MES')">
+    MES
+    <span class="tab-tick">$5 / pt</span>
+  </button>
+  <button class="tab-btn" id="tab-MGC" onclick="setSymbol('MGC')">
+    MGC
+    <span class="tab-tick">$10 / pt</span>
+  </button>
 </div>
+
+<!-- Main content -->
 
 <main>
 
+  <!-- Symbol card -->
+
   <div class="symbol-card">
+    <div class="symbol-card-glow"></div>
     <div>
       <div class="sym-name" id="card-symbol">MNQ</div>
-      <div class="sym-desc"  id="card-desc">Micro Nasdaq-100</div>
+      <div class="sym-desc" id="card-desc">Micro Nasdaq-100</div>
     </div>
     <div class="tick-badge">
       <div class="tick-label">Tick Value</div>
-      <div class="tick-num"  id="card-tick">$2<span>/pt</span></div>
+      <div class="tick-num" id="card-tick">$2<span>/pt</span></div>
     </div>
   </div>
 
-  <!-- CONTRACTS -->
+  <!-- Contracts stepper -->
 
   <div class="input-group">
     <label class="input-label">Contracts</label>
-    <div class="control-row">
-      <button class="pm-btn" id="contracts-minus">−</button>
-      <div class="slider-wrap" id="contracts-slider-wrap">
-        <div class="slider-track">
-          <div class="slider-fill"  id="contracts-fill"></div>
-          <div class="slider-thumb" id="contracts-thumb"></div>
-        </div>
-      </div>
-      <button class="pm-btn" id="contracts-plus">+</button>
-      <input  type="number" class="number-input" id="contracts-input" min="1" max="99" value="1">
+    <div class="stepper-row">
+      <button class="step-btn" onclick="step('contracts', -1)">−</button>
+      <div class="step-divider"></div>
+      <input class="step-display" id="contracts-display" type="number" inputmode="numeric" min="1" max="99" value="1" onchange="setField('contracts', this.value)">
+      <div class="step-divider"></div>
+      <button class="step-btn" onclick="step('contracts', 1)">+</button>
+    </div>
+    <div class="slider-wrap">
+      <input type="range" id="contracts-slider" min="1" max="20" value="1" oninput="sliderUpdate('contracts', this.value)">
     </div>
   </div>
 
-  <!-- POINTS -->
+  <!-- Points stepper -->
 
   <div class="input-group">
     <label class="input-label">Points</label>
-    <div class="control-row">
-      <button class="pm-btn" id="points-minus">−</button>
-      <div class="slider-wrap" id="points-slider-wrap">
-        <div class="slider-track">
-          <div class="slider-fill"  id="points-fill"></div>
-          <div class="slider-thumb" id="points-thumb"></div>
-        </div>
-      </div>
-      <button class="pm-btn" id="points-plus">+</button>
-      <input  type="number" class="number-input" id="points-input" min="0.25" max="9999" step="0.25" value="15">
+    <div class="stepper-row">
+      <button class="step-btn" onclick="step('points', -1)">−</button>
+      <div class="step-divider"></div>
+      <input class="step-display" id="points-display" type="number" inputmode="decimal" min="0.25" max="9999" step="0.25" value="15" onchange="setField('points', this.value)">
+      <div class="step-divider"></div>
+      <button class="step-btn" onclick="step('points', 1)">+</button>
+    </div>
+    <div class="slider-wrap">
+      <input type="range" id="points-slider" min="1" max="200" value="15" oninput="sliderUpdate('points', this.value)">
     </div>
   </div>
 
-  <!-- RESULTS -->
+  <!-- Results -->
 
   <div class="results-grid">
-    <div class="result-card highlight">
+    <div class="result-card full-width">
       <div class="rc-label">Total P&amp;L</div>
-      <div class="rc-value" id="result-dollar">$30.00</div>
-      <div class="rc-sub"   id="result-sub">1 contract · 15 pts · MNQ</div>
+      <div class="rc-value" id="result-total">$30.00</div>
+      <div class="rc-sub" id="result-sub">1 contract · 15 pts · MNQ</div>
     </div>
     <div class="result-card">
       <div class="rc-label">Per Contract</div>
       <div class="rc-value" id="result-per-contract">$30.00</div>
-      <div class="rc-sub">single contract value</div>
+      <div class="rc-sub">single contract</div>
     </div>
     <div class="result-card">
       <div class="rc-label">Per Point</div>
       <div class="rc-value" id="result-per-point">$2.00</div>
-      <div class="rc-sub"   id="result-tick-sub">tick × contracts</div>
+      <div class="rc-sub" id="result-per-point-sub">$2 × 1 contract</div>
     </div>
   </div>
 
   <div class="divider"></div>
 
-  <div>
-    <div class="ref-title">Quick Reference — <span id="ref-sym-label">MNQ</span></div>
-    <table class="ref-table">
-      <thead>
-        <tr><th>Points</th><th>1 Contract</th><th>2 Contracts</th><th>5 Contracts</th></tr>
-      </thead>
-      <tbody id="ref-tbody"></tbody>
-    </table>
-  </div>
+  <!-- Reference table -->
+
+  <div class="ref-title">Quick Reference — <span id="ref-sym">MNQ</span></div>
+  <table class="ref-table">
+    <thead>
+      <tr>
+        <th>Points</th>
+        <th>1 Contract</th>
+        <th>2 Contracts</th>
+        <th>5 Contracts</th>
+      </tr>
+    </thead>
+    <tbody id="ref-tbody"></tbody>
+  </table>
 
 </main>
 
 <script>
-  const SYMBOLS = {
-    MNQ: { name:'MNQ', desc:'Micro Nasdaq-100',      tickValue:2  },
-    MES: { name:'MES', desc:'Micro E-mini S&P 500',  tickValue:5  },
-    MGC: { name:'MGC', desc:'Micro Gold',             tickValue:10 },
+  var SYMBOLS = {
+    MNQ: { name: 'MNQ', desc: 'Micro Nasdaq-100',     tick: 2  },
+    MES: { name: 'MES', desc: 'Micro E-mini S&P 500', tick: 5  },
+    MGC: { name: 'MGC', desc: 'Micro Gold',           tick: 10 }
   };
-  const REF_POINTS = [5,10,15,20,25,30,50,100];
+  var REF_PTS = [5, 10, 15, 20, 25, 30, 50, 100];
 
-  // Slider configs
-  const SLIDER_CONFIG = {
-    contracts: { min:1,    max:20,  step:1,    defVal:1  },
-    points:    { min:0.25, max:200, step:0.25, defVal:15 },
-  };
-
-  let currentSymbol = 'MNQ';
-  let contracts = 1;
-  let points    = 15;
-
-  // ── Custom slider logic ──
-  function makeSlider(name) {
-    const cfg   = SLIDER_CONFIG[name];
-    const wrap  = document.getElementById(`${name}-slider-wrap`);
-    const fill  = document.getElementById(`${name}-fill`);
-    const thumb = document.getElementById(`${name}-thumb`);
-    const input = document.getElementById(`${name}-input`);
-
-    function pct(val) {
-      return (val - cfg.min) / (cfg.max - cfg.min);
-    }
-    function updateUI(val) {
-      const p = pct(val) * 100;
-      fill.style.width  = p + '%';
-      thumb.style.left  = p + '%';
-    }
-    function clamp(val) {
-      const steps = Math.round((val - cfg.min) / cfg.step);
-      return Math.max(cfg.min, Math.min(cfg.max, cfg.min + steps * cfg.step));
-    }
-    function valFromEvent(e) {
-      const rect = wrap.getBoundingClientRect();
-      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-      const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-      return clamp(cfg.min + ratio * (cfg.max - cfg.min));
-    }
-    function set(val, updateInput) {
-      val = clamp(val);
-      if (name === 'contracts') contracts = val;
-      else                      points    = val;
-      updateUI(val);
-      if (updateInput) input.value = val;
-      recalc();
-    }
-
-    // Touch / mouse events on the slider wrap
-    function onStart(e) {
-      e.preventDefault();
-      set(valFromEvent(e), true);
-      const onMove = ev => { ev.preventDefault(); set(valFromEvent(ev), true); };
-      const onEnd  = ()  => { document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onEnd); document.removeEventListener('touchmove', onMove); document.removeEventListener('touchend', onEnd); };
-      document.addEventListener('mousemove', onMove, {passive:false});
-      document.addEventListener('mouseup',   onEnd);
-      document.addEventListener('touchmove', onMove, {passive:false});
-      document.addEventListener('touchend',  onEnd);
-    }
-    wrap.addEventListener('mousedown',  onStart, {passive:false});
-    wrap.addEventListener('touchstart', onStart, {passive:false});
-
-    // Number input
-    input.addEventListener('input', () => {
-      const v = parseFloat(input.value);
-      if (!isNaN(v)) set(v, false);
-    });
-    input.addEventListener('change', () => {
-      const v = clamp(parseFloat(input.value) || cfg.min);
-      set(v, true);
-    });
-
-    // +/- buttons
-    document.getElementById(`${name}-minus`).addEventListener('click', () => {
-      const cur = name==='contracts' ? contracts : points;
-      set(cur - cfg.step, true);
-    });
-    document.getElementById(`${name}-plus`).addEventListener('click', () => {
-      const cur = name==='contracts' ? contracts : points;
-      set(cur + cfg.step, true);
-    });
-
-    // Init
-    updateUI(name==='contracts' ? contracts : points);
-  }
-
-  function setSymbol(sym) {
-    currentSymbol = sym;
-    ['MNQ','MES','MGC'].forEach(s => {
-      document.getElementById(`tab-${s}`).classList.toggle('active', s===sym);
-    });
-    const s = SYMBOLS[sym];
-    document.getElementById('card-symbol').textContent = s.name;
-    document.getElementById('card-desc').textContent   = s.desc;
-    document.getElementById('card-tick').innerHTML     = `$${s.tickValue}<span>/pt</span>`;
-    recalc();
-    buildRefTable();
-  }
+  var sym = 'MNQ';
+  var contracts = 1;
+  var points = 15;
 
   function fmt(n) {
-    return '$' + n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+    var s = Math.abs(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return '$' + s;
+  }
+
+  function setSymbol(s) {
+    sym = s;
+    ['MNQ','MES','MGC'].forEach(function(k) {
+      var el = document.getElementById('tab-' + k);
+      if (el) { el.className = k === s ? 'tab-btn active' : 'tab-btn'; }
+    });
+    var info = SYMBOLS[s];
+    document.getElementById('card-symbol').textContent = info.name;
+    document.getElementById('card-desc').textContent = info.desc;
+    document.getElementById('card-tick').innerHTML = '$' + info.tick + '<span>/pt</span>';
+    document.getElementById('progress-count').textContent = info.name + ' · $' + info.tick + '/pt';
+    recalc();
+    buildTable();
+  }
+
+  function step(field, delta) {
+    if (field === 'contracts') {
+      contracts = Math.max(1, Math.min(99, contracts + delta));
+    } else {
+      points = Math.max(0.25, Math.min(9999, Math.round((points + delta * 0.25) * 4) / 4));
+      if (delta === 1 || delta === -1) points = Math.max(1, Math.min(9999, contracts === contracts ? points + (delta > 0 ? 0.75 : -0.75) : points)); // whole pts
+      points = Math.max(0.25, Math.min(9999, Math.round((parseFloat(document.getElementById('points-display').value) + delta) * 1) ));
+    }
+    syncDisplays();
+    recalc();
+  }
+
+  function setField(field, val) {
+    var n = parseFloat(val);
+    if (isNaN(n)) return;
+    if (field === 'contracts') contracts = Math.max(1, Math.min(99, Math.round(n)));
+    if (field === 'points') points = Math.max(0.25, Math.min(9999, n));
+    syncDisplays();
+    recalc();
+  }
+
+  function sliderUpdate(field, val) {
+    var n = parseFloat(val);
+    if (field === 'contracts') contracts = Math.round(n);
+    if (field === 'points') points = n;
+    syncDisplays();
+    recalc();
+  }
+
+  function syncDisplays() {
+    var cd = document.getElementById('contracts-display');
+    var cs = document.getElementById('contracts-slider');
+    var pd = document.getElementById('points-display');
+    var ps = document.getElementById('points-slider');
+    if (cd) cd.value = contracts;
+    if (cs) cs.value = Math.min(contracts, 20);
+    if (pd) pd.value = points;
+    if (ps) ps.value = Math.min(points, 200);
   }
 
   function recalc() {
-    const tick = SYMBOLS[currentSymbol].tickValue;
-    document.getElementById('result-dollar').textContent       = fmt(tick * points * contracts);
-    document.getElementById('result-per-contract').textContent = fmt(tick * points);
-    document.getElementById('result-per-point').textContent    = fmt(tick * contracts);
-    document.getElementById('result-sub').textContent          =
-      `${contracts} contract${contracts>1?'s':''} · ${points} pts · ${currentSymbol}`;
-    document.getElementById('result-tick-sub').textContent     =
-      `$${tick} × ${contracts} contract${contracts>1?'s':''}`;
+    var tick = SYMBOLS[sym].tick;
+    var total = tick * points * contracts;
+    var perC  = tick * points;
+    var perPt = tick * contracts;
+    document.getElementById('result-total').textContent = fmt(total);
+    document.getElementById('result-per-contract').textContent = fmt(perC);
+    document.getElementById('result-per-point').textContent = fmt(perPt);
+    document.getElementById('result-sub').textContent =
+      contracts + ' contract' + (contracts > 1 ? 's' : '') + ' · ' + points + ' pts · ' + sym;
+    document.getElementById('result-per-point-sub').textContent =
+      '$' + tick + ' × ' + contracts + ' contract' + (contracts > 1 ? 's' : '');
   }
 
-  function buildRefTable() {
-    const tick = SYMBOLS[currentSymbol].tickValue;
-    document.getElementById('ref-sym-label').textContent = currentSymbol;
-    document.getElementById('ref-tbody').innerHTML = REF_POINTS.map(p => `
-      <tr>
-        <td class="pts-col">${p} pts</td>
-        <td class="dollar-col">${fmt(tick*p)}</td>
-        <td class="dollar-col">${fmt(tick*p*2)}</td>
-        <td class="dollar-col">${fmt(tick*p*5)}</td>
-      </tr>`).join('');
+  function buildTable() {
+    var tick = SYMBOLS[sym].tick;
+    document.getElementById('ref-sym').textContent = sym;
+    var rows = '';
+    for (var i = 0; i < REF_PTS.length; i++) {
+      var p = REF_PTS[i];
+      rows += '<tr>' +
+        '<td class="pts-col">' + p + ' pts</td>' +
+        '<td class="dollar-col">' + fmt(tick * p) + '</td>' +
+        '<td class="dollar-col">' + fmt(tick * p * 2) + '</td>' +
+        '<td class="dollar-col">' + fmt(tick * p * 5) + '</td>' +
+        '</tr>';
+    }
+    document.getElementById('ref-tbody').innerHTML = rows;
   }
 
-  // Init
-  makeSlider('contracts');
-  makeSlider('points');
-  setSymbol('MNQ');
+  // fix the step function for points — simple whole-number steps
+  step = function(field, delta) {
+    if (field === 'contracts') {
+      contracts = Math.max(1, Math.min(99, contracts + delta));
+    } else {
+      points = Math.max(1, Math.min(9999, points + delta));
+    }
+    syncDisplays();
+    recalc();
+  };
+
+  recalc();
+  buildTable();
 </script>
 
 </body>
