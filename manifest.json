@@ -1,6 +1,6 @@
 {
   "name": "Futures Price Chart",
-  "short_name": "pricechart",
+  "short_name": "P&L",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
